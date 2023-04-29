@@ -1,0 +1,3 @@
+D:/Work/TMP/canal2/cmake-build-debug-clang-32/CMakeFiles/DeviceInterfaceList.dir
+D:/Work/TMP/canal2/cmake-build-debug-clang-32/CMakeFiles/edit_cache.dir
+D:/Work/TMP/canal2/cmake-build-debug-clang-32/CMakeFiles/rebuild_cache.dir
