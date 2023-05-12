@@ -1,3 +1,0 @@
-D:/Work/TMP/canal2/cmake-build-release-clang-64/CMakeFiles/DeviceInterfaceList.dir
-D:/Work/TMP/canal2/cmake-build-release-clang-64/CMakeFiles/edit_cache.dir
-D:/Work/TMP/canal2/cmake-build-release-clang-64/CMakeFiles/rebuild_cache.dir

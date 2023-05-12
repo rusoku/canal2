@@ -1,4 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/gedsi/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/231.8770.66/bin/ninja/win/x64/ninja.exe "-DCMAKE_C_COMPILER=C:/Program Files (x86)/LLVM/bin/clang.exe" "-DCMAKE_CXX_COMPILER=C:/Program Files (x86)/LLVM/bin/clang++.exe" -G Ninja -S D:\Work\TMP\canal2 -B D:\Work\TMP\canal2\cmake-build-debug-clang-32
--- Configuring done
--- Generating done
--- Build files have been written to: D:/Work/TMP/canal2/cmake-build-debug-clang-32
