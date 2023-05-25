@@ -21,12 +21,21 @@ typedef struct _GUID {
 //DEFINE_GUID(GUID_INTERFACE_WinUsbF4FS1,
 //            0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B);
 
+struct CAN_DEV_INFO{
+    int index;
+    UINT16 vid;
+    UINT16 pid;
+    TCHAR SerialNumber[8];
+};
+
+struct CAN_DEV_INFO CanDeviceInfo = {};
+
 const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
 
 CONFIGRET cr = CR_SUCCESS;
 ULONG device_interface_list_length = 0;
 TCHAR* device_interface_list = NULL;
-HANDLE file_hd = NULL;
+//HANDLE file_hd = NULL;
 HRESULT hr = ERROR_SUCCESS;
 //if (FAILED(hr))
 
@@ -64,7 +73,7 @@ int CAN_interface_list(void) {
         hr = (HRESULT)CM_MapCrToWin32Err(cr, CR_DEFAULT);
         goto clean0;
     }
-
+/*
     file_hd = CreateFile(device_interface_list,
                          GENERIC_WRITE | GENERIC_READ,
                          FILE_SHARE_WRITE | FILE_SHARE_READ,
@@ -77,12 +86,13 @@ int CAN_interface_list(void) {
         hr = HRESULT_FROM_WIN32(GetLastError());
         goto clean0;
     }
-
+*/
     printf("List size = %lu\n", device_interface_list_length);
     printf("%s\n", device_interface_list);
 
+
     clean0:
-    CloseHandle(file_hd);
+    //CloseHandle(file_hd);
     HeapFree(GetProcessHeap(), 0, device_interface_list);
 
     printf("hr = %ld\n", hr);
