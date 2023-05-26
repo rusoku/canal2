@@ -9,33 +9,16 @@
 #include <cfgmgr32.h>
 #include <heapapi.h>
 
-/*
-typedef struct _GUID {
-    unsigned long  Data1;
-    unsigned short Data2;
-    unsigned short Data3;
-    unsigned char  Data4[ 8 ];
-} GUID;
-*/
-
-//DEFINE_GUID(GUID_INTERFACE_WinUsbF4FS1,
-//            0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B);
-
-struct CAN_DEV_INFO{
-    int index;
-    UINT16 vid;
-    UINT16 pid;
-    TCHAR SerialNumber[8];
-};
-
-struct CAN_DEV_INFO CanDeviceInfo = {};
+#include "CAN_interface_list.h"
 
 const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
+
+struct CAN_DEV_INFO CanDeviceInfo = {};
 
 CONFIGRET cr = CR_SUCCESS;
 ULONG device_interface_list_length = 0;
 TCHAR* device_interface_list = NULL;
-//HANDLE file_hd = NULL;
+HANDLE file_hd = NULL;
 HRESULT hr = ERROR_SUCCESS;
 //if (FAILED(hr))
 
@@ -73,7 +56,8 @@ int CAN_interface_list(void) {
         hr = (HRESULT)CM_MapCrToWin32Err(cr, CR_DEFAULT);
         goto clean0;
     }
-/*
+
+    /*
     file_hd = CreateFile(device_interface_list,
                          GENERIC_WRITE | GENERIC_READ,
                          FILE_SHARE_WRITE | FILE_SHARE_READ,
@@ -87,15 +71,42 @@ int CAN_interface_list(void) {
         goto clean0;
     }
 */
-    printf("List size = %lu\n", device_interface_list_length);
-    printf("%s\n", device_interface_list);
 
+    //printf("List size = %lu\n", device_interface_list_length);
+    //printf("%s\n", device_interface_list);
+
+    size_t  DeviceStrLen = 0;
+    TCHAR   *pCurrentIterfaceList = device_interface_list;
+    UINT16  TotalDevicesFound = 0;
+
+    for(int x = 0; x < TOTAL_DEVICES_AVAILABLE; x++)
+    {
+        DeviceStrLen = strlen(pCurrentIterfaceList);
+
+        if(DeviceStrLen == 0)
+            break;
+
+        file_hd = CreateFile(pCurrentIterfaceList,
+                             GENERIC_WRITE | GENERIC_READ,
+                             FILE_SHARE_WRITE | FILE_SHARE_READ,
+                             NULL,
+                             OPEN_EXISTING,
+                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
+                             NULL);
+
+        if (file_hd != INVALID_HANDLE_VALUE)
+        {
+            printf("%s\n", pCurrentIterfaceList);
+            TotalDevicesFound++;
+        }
+
+        CloseHandle(file_hd);
+        pCurrentIterfaceList = DeviceStrLen + pCurrentIterfaceList + sizeof(TCHAR);
+    }
 
     clean0:
-    //CloseHandle(file_hd);
     HeapFree(GetProcessHeap(), 0, device_interface_list);
-
-    printf("hr = %ld\n", hr);
+    printf("TotalDevicesFound = %d\n", TotalDevicesFound);
 
     return (HRESULT)hr;
 }
