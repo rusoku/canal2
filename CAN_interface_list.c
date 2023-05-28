@@ -4,23 +4,31 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include <inttypes.h>
+//#include <inttypes.h>
 #include <initguid.h>
 #include <cfgmgr32.h>
 #include <heapapi.h>
-
 #include "CAN_interface_list.h"
 
 const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
 
-struct CAN_DEV_INFO CanDeviceInfo = {};
+struct CAN_DEV_INFO CanDeviceInfo[TOTAL_DEVICES_AVAILABLE+1] = {0};
 
-CONFIGRET cr = CR_SUCCESS;
-ULONG device_interface_list_length = 0;
-TCHAR* device_interface_list = NULL;
-HANDLE file_hd = NULL;
+CONFIGRET   cr = CR_SUCCESS;
+ULONG   device_interface_list_length = 0;
+TCHAR*  device_interface_list = NULL;
+HANDLE  file_hd = NULL;
 HRESULT hr = ERROR_SUCCESS;
 //if (FAILED(hr))
+
+size_t  DeviceStrLen = 0;
+UINT16  TotalDevicesFound = 0;
+TCHAR*  pCurrentIterfaceList;
+
+/***
+ *
+ * @return cr
+ */
 
 int CAN_interface_list(void) {
 
@@ -57,27 +65,7 @@ int CAN_interface_list(void) {
         goto clean0;
     }
 
-    /*
-    file_hd = CreateFile(device_interface_list,
-                         GENERIC_WRITE | GENERIC_READ,
-                         FILE_SHARE_WRITE | FILE_SHARE_READ,
-                         NULL,
-                         OPEN_EXISTING,
-                         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
-                         NULL);
-
-    if (file_hd == INVALID_HANDLE_VALUE) {
-        hr = HRESULT_FROM_WIN32(GetLastError());
-        goto clean0;
-    }
-*/
-
-    //printf("List size = %lu\n", device_interface_list_length);
-    //printf("%s\n", device_interface_list);
-
-    size_t  DeviceStrLen = 0;
-    TCHAR   *pCurrentIterfaceList = device_interface_list;
-    UINT16  TotalDevicesFound = 0;
+    pCurrentIterfaceList = device_interface_list;
 
     for(int x = 0; x < TOTAL_DEVICES_AVAILABLE; x++)
     {
@@ -99,8 +87,8 @@ int CAN_interface_list(void) {
             printf("%s\n", pCurrentIterfaceList);
             TotalDevicesFound++;
         }
-
         CloseHandle(file_hd);
+
         pCurrentIterfaceList = DeviceStrLen + pCurrentIterfaceList + sizeof(TCHAR);
     }
 

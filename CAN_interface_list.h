@@ -5,14 +5,15 @@
 #ifndef DEVICEINTERFACELIST_CAN_INTERFACE_LIST_H
 #define DEVICEINTERFACELIST_CAN_INTERFACE_LIST_H
 
-#define TOTAL_DEVICES_AVAILABLE 8
-
 struct CAN_DEV_INFO{
-    int index;
-    UINT16 vid;
-    UINT16 pid;
-    TCHAR SerialNumber[8];
+    BOOL    valid;
+    UINT8   index;
+    UINT16  vid;
+    UINT16  pid;
+    TCHAR   SerialNumber[8];
 };
+
+#define TOTAL_DEVICES_AVAILABLE 8
 
 /*
 typedef struct _GUID {
