@@ -12,7 +12,7 @@
 
 const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
 
-struct CAN_DEV_INFO CanDeviceInfo[TOTAL_DEVICES_AVAILABLE+1] = {0};
+//struct CAN_DEV_INFO CanDeviceInfo[TOTAL_DEVICES_AVAILABLE+1] = {0};
 
 CONFIGRET   cr = CR_SUCCESS;
 ULONG   device_interface_list_length = 0;
@@ -30,7 +30,10 @@ TCHAR*  pCurrentIterfaceList;
  * @return cr
  */
 
-int CAN_interface_list(void) {
+int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
+
+    if (canDeviceList == NULL)
+        return  CR_INVALID_POINTER;
 
     cr = CM_Get_Device_Interface_List_Size(&device_interface_list_length,
                                            (LPGUID)&GUID_DEVINTERFACE_WinUsbF4FS1,
