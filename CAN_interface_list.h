@@ -6,13 +6,15 @@
 #define DEVICEINTERFACELIST_CAN_INTERFACE_LIST_H
 
 struct CAN_DEV_INFO{
-    BOOL    valid;
-    UINT8   index;
-    TCHAR   DeviceStr[1024];
+    //BOOL    valid;
+    //UINT8   index;
+    //TCHAR   DeviceStr[1024];
+    TCHAR   DeviceType[64];
+    TCHAR   uuid[64];
     UINT16  vid;
     UINT16  pid;
     TCHAR   SerialNumber[64];
-    UINT32  reserved;
+    //UINT32  reserved;
 };
 
 struct  CAN_DEV_LIST{

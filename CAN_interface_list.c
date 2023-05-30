@@ -4,10 +4,12 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <string.h>
 //#include <inttypes.h>
 #include <initguid.h>
 #include <cfgmgr32.h>
 #include <heapapi.h>
+#include <tchar.h>
 #include "CAN_interface_list.h"
 
 const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
@@ -27,6 +29,7 @@ TCHAR*  pCurrentIterfaceList;
 
 /*
 https://www.cs.helsinki.fi/group/boi2016/doc/cppreference/reference/en.cppreference.com/w/c/string/byte/strtok.html
+https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/strtok-s-strtok-s-l-wcstok-s-wcstok-s-l-mbstok-s-mbstok-s-l?view=msvc-170
 */
 
 /***
@@ -36,8 +39,11 @@ https://www.cs.helsinki.fi/group/boi2016/doc/cppreference/reference/en.cpprefere
 int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
     UINT8   canDeviceListIndex = 0;
-    TCHAR   *token = NULL;
-    TCHAR   *next_token = NULL;
+    TCHAR   *token1 = NULL;
+    TCHAR   *next_token1 = NULL;
+    TCHAR   *token2 = NULL;
+    TCHAR   *next_token2 = NULL;
+    TCHAR   tmp_string[64];
 
     if (canDeviceList == NULL)
         return  CR_INVALID_POINTER;
@@ -76,8 +82,9 @@ int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
     }
 
     pCurrentIterfaceList = device_interface_list;
+    canDeviceList->canDevCount = 0;
 
-    for(int x = 0; x < TOTAL_DEVICES_AVAILABLE; x++)
+    for (int CurrentDeviceIndex = 0; CurrentDeviceIndex < TOTAL_DEVICES_AVAILABLE; CurrentDeviceIndex++)
     {
         DeviceStrLen = strlen(pCurrentIterfaceList);
 
@@ -95,12 +102,45 @@ int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
         if (file_hd != INVALID_HANDLE_VALUE)
         {
             printf("%s\n", pCurrentIterfaceList);
+
+            /* \\?\USB */
+            token1 = strtok_s(pCurrentIterfaceList, "#", &next_token1);
+            printf("token = %s\n", token1);
+            lstrcpynA(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType, token1, sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType));
+
+            if(token1 == NULL)
+                continue;
+
+            /* VID, PID */
+            token1 = strtok_s(NULL, "#", &next_token1);
+            printf("token = %s\n", token1);
+            lstrcpynA(tmp_string, token1, sizeof(tmp_string));
+            token2 = strtok_s(tmp_string, "&", &next_token2);
+                printf("VID = %s\n", token2);
+            token2 = strtok_s(NULL, "&", &next_token2);
+                printf("PID = %s\n", token2);
+
+            if(token1 == NULL)
+                continue;
+
+            /* Serial */
+            token1 = strtok_s(NULL, "#", &next_token1);
+            printf("token = %s\n", token1);
+            lstrcpynA(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber, token1, sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber));
+
+            if(token1 == NULL)
+                continue;
+
+            /* UUID */
+            token1 = strtok_s(NULL, "#", &next_token1);
+            printf("token = %s\n", token1);
+            lstrcpynA(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid, token1, sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid));
+
             TotalDevicesFound++;
-
-            //strtok_s(
+            canDeviceList->canDevCount++;
         }
-        CloseHandle(file_hd);
 
+        CloseHandle(file_hd);
         pCurrentIterfaceList = DeviceStrLen + pCurrentIterfaceList + sizeof(TCHAR);
     }
 
