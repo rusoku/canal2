@@ -8,6 +8,7 @@
 struct CAN_DEV_INFO{
     BOOL    valid;
     UINT8   index;
+    TCHAR   DeviceStr[1024];
     UINT16  vid;
     UINT16  pid;
     TCHAR   SerialNumber[64];

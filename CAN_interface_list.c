@@ -25,12 +25,19 @@ size_t  DeviceStrLen = 0;
 UINT16  TotalDevicesFound = 0;
 TCHAR*  pCurrentIterfaceList;
 
+/*
+https://www.cs.helsinki.fi/group/boi2016/doc/cppreference/reference/en.cppreference.com/w/c/string/byte/strtok.html
+*/
+
 /***
  *
  * @return cr
  */
-
 int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
+
+    UINT8   canDeviceListIndex = 0;
+    TCHAR   *token = NULL;
+    TCHAR   *next_token = NULL;
 
     if (canDeviceList == NULL)
         return  CR_INVALID_POINTER;
@@ -89,6 +96,8 @@ int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
         {
             printf("%s\n", pCurrentIterfaceList);
             TotalDevicesFound++;
+
+            //strtok_s(
         }
         CloseHandle(file_hd);
 
