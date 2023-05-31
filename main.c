@@ -8,13 +8,14 @@ int main()
 {
     CAN_interface_list(&canDeviceList);
 
-    printf("\ncan_dev_info_cnt = %d\n\n", canDeviceList.canDevCount);
+    printf("\nTotal devices found: = %d\n", canDeviceList.canDevCount);
+    printf("----------------------------------\n");
 
     for(int x = 0; x < canDeviceList.canDevCount; x++ )
     {
-        printf("serial = %s\n", canDeviceList.canDevInfo[x].SerialNumber);
-        printf("vid = 0x%04X, pid = 0x%04X\n", canDeviceList.canDevInfo[x].vid, canDeviceList.canDevInfo[x].pid);
-        printf("uuid = %s\n", canDeviceList.canDevInfo[x].uuid);
+        printf("Serial = %s\n", canDeviceList.canDevInfo[x].SerialNumber);
+        printf("VID = 0x%04X, PID = 0x%04X\n", canDeviceList.canDevInfo[x].vid, canDeviceList.canDevInfo[x].pid);
+        printf("UUID = %s\n", canDeviceList.canDevInfo[x].uuid);
         printf("DeviceType = %s\n", canDeviceList.canDevInfo[x].DeviceType);
         printf("\n");
     }

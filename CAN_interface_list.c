@@ -4,12 +4,11 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <strsafe.h>
 #include <string.h>
-//#include <inttypes.h>
 #include <initguid.h>
 #include <cfgmgr32.h>
 #include <heapapi.h>
-#include <tchar.h>
 #include "CAN_interface_list.h"
 
 const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
@@ -21,10 +20,8 @@ ULONG   device_interface_list_length = 0;
 TCHAR*  device_interface_list = NULL;
 HANDLE  file_hd = NULL;
 HRESULT hr = ERROR_SUCCESS;
-//if (FAILED(hr))
-
 size_t  DeviceStrLen = 0;
-UINT16  TotalDevicesFound = 0;
+UINT16  CurrentDeviceIndex = 0;
 TCHAR*  pCurrentIterfaceList;
 
 /*
@@ -36,7 +33,7 @@ https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/strtok-s-strto
  *
  * @return cr
  */
-int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
+DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
     UINT8   canDeviceListIndex = 0;
     TCHAR   *token1 = NULL;
@@ -82,13 +79,12 @@ int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
     }
 
     pCurrentIterfaceList = device_interface_list;
-    canDeviceList->canDevCount = 0;
+    CurrentDeviceIndex = 0;
 
-    for (int CurrentDeviceIndex = 0; CurrentDeviceIndex < TOTAL_DEVICES_AVAILABLE; CurrentDeviceIndex++)
+    for (UINT16 x = 0; x < TOTAL_DEVICES_AVAILABLE; x++)
     {
-        DeviceStrLen = strlen(pCurrentIterfaceList);
-
-        if(DeviceStrLen == 0)
+        hr = StringCchLengthA(pCurrentIterfaceList, STRSAFE_MAX_LENGTH, &DeviceStrLen);
+        if (FAILED(hr) || DeviceStrLen == 0)
             break;
 
         file_hd = CreateFile(pCurrentIterfaceList,
@@ -101,52 +97,66 @@ int CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
         if (file_hd != INVALID_HANDLE_VALUE)
         {
-            printf("%s\n", pCurrentIterfaceList);
-
-            /* \\?\USB */
-            token1 = strtok_s(pCurrentIterfaceList, "#", &next_token1);
-            printf("token = %s\n", token1);
-            lstrcpynA(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType, token1, sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType));
+            /* Device ID */
+            token1 = strtok_s(pCurrentIterfaceList,"#", &next_token1);
+            //printf("token = %s\n", token1);
+            StringCbCopyA(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType,
+                          sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType)/sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType[0]),
+                          token1);
 
             if(token1 == NULL)
-                continue;
+                goto next_device;
 
             /* VID, PID */
-            token1 = strtok_s(NULL, "#", &next_token1);
-            printf("token = %s\n", token1);
-            lstrcpynA(tmp_string, token1, sizeof(tmp_string));
-            token2 = strtok_s(tmp_string, "&", &next_token2);
-                printf("VID = %s\n", token2);
-            token2 = strtok_s(NULL, "&", &next_token2);
-                printf("PID = %s\n", token2);
+            token1 = strtok_s(NULL,"#", &next_token1);
+            //printf("token = %s\n", token1);
+            lstrcpynA(tmp_string, token1, sizeof(tmp_string)/sizeof(tmp_string[0]));
+            token2 = strtok_s(tmp_string,"&", &next_token2);
+                //printf("VID = %s\n", token2);
+
+            canDeviceList->canDevInfo[CurrentDeviceIndex].vid = (UINT16) strtoul(token2+4, NULL, 16);
+
+            if(token2 == NULL)
+                goto next_device;;
+
+            token2 = strtok_s(NULL,"&", &next_token2);
+                //printf("PID = %s\n", token2);
+
+            canDeviceList->canDevInfo[CurrentDeviceIndex].pid = (UINT16) strtoul(token2+4, NULL, 16);
 
             if(token1 == NULL)
-                continue;
+                goto next_device;;
 
             /* Serial */
-            token1 = strtok_s(NULL, "#", &next_token1);
-            printf("token = %s\n", token1);
-            lstrcpynA(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber, token1, sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber));
+            token1 = strtok_s(NULL,"#", &next_token1);
+            //printf("token = %s\n", token1);
+            StringCbCopyA(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber,
+                          sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber)/sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber[0]),
+                          token1);
 
             if(token1 == NULL)
-                continue;
+                goto next_device;;
 
             /* UUID */
-            token1 = strtok_s(NULL, "#", &next_token1);
-            printf("token = %s\n", token1);
-            lstrcpynA(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid, token1, sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid));
+            token1 = strtok_s(NULL,"#", &next_token1);
+            //printf("token = %s\n", token1);
 
-            TotalDevicesFound++;
-            canDeviceList->canDevCount++;
+            StringCbCopyA(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid,
+                          sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid)/sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid[0]),
+                          token1);
+
+            CurrentDeviceIndex++;
         }
 
+        next_device:
         CloseHandle(file_hd);
         pCurrentIterfaceList = DeviceStrLen + pCurrentIterfaceList + sizeof(TCHAR);
     }
 
     clean0:
+    canDeviceList->canDevCount = CurrentDeviceIndex;
     HeapFree(GetProcessHeap(), 0, device_interface_list);
-    printf("TotalDevicesFound = %d\n", TotalDevicesFound);
+    //printf("TotalDevicesFound = %d\n", CurrentDeviceIndex);
 
     return (HRESULT)hr;
 }
