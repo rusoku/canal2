@@ -6,14 +6,11 @@ project(canal2 C)
 #https://devblogs.microsoft.com/cppblog/introducing-the-universal-crt/
 #https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170
 
-#I think that I prefer that we make the option explicit on Windows (and required).
-#Particularly with CMake, this becomes really simple: CMAKE_MSVC_RUNTIME_LIBRARY and the MSVC_RUNTIME_LIBRARY property can be passed to the driver
-#and everything should work just fine that way.
-
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_COMPILER)
 set(CMAKE_CXX_COMPILER)
+
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 #set(LLVM_STATIC_LINK_CXX_STDLIB true)
 

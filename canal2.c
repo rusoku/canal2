@@ -25,7 +25,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
-DllExport char* DriverName(void) {
+DllExport char* WINAPI DriverName(void) {
     DebugPrintf("TouCAN DriverName\n");
     return (char*)"TouCAN Marine";
 }
