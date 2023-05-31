@@ -24,11 +24,6 @@ size_t  DeviceStrLen = 0;
 UINT16  CurrentDeviceIndex = 0;
 TCHAR*  pCurrentIterfaceList;
 
-/*
-https://www.cs.helsinki.fi/group/boi2016/doc/cppreference/reference/en.cppreference.com/w/c/string/byte/strtok.html
-https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/strtok-s-strtok-s-l-wcstok-s-wcstok-s-l-mbstok-s-mbstok-s-l?view=msvc-170
-*/
-
 /***
  *
  * @return cr
