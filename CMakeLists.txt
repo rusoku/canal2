@@ -8,6 +8,7 @@ project(canal2 C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+
 set(CMAKE_C_COMPILER)
 set(CMAKE_CXX_COMPILER)
 
@@ -20,27 +21,22 @@ set(CMAKE_CXX_COMPILER)
 
 #add_executable(DeviceInterfaceList main.c CAN_interface_list.c CAN_interface_list.h)
 
+include_directories(include)
+
 add_library(canal2 SHARED
         CAN_interface_list.c
-        CAN_interface_list.h
-        canal2.c
-        canal2.h
+        canal2.cpp
         debug.c
-        debug.h
         CDllList.cpp
-        CDllDrvObj.h
         CDllDrvObj.cpp
-        CDllList.h
         CTouCANobj.cpp
-        CTouCANobj.h
         CTouCANobjCmdMsg.cpp
-        CTouCANobjCmdMsg.h
         CTouCANobjWinUSB.cpp)
 
 set_property(TARGET canal2 PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-target_link_libraries(canal2 cfgmgr32)
+target_link_libraries(canal2 cfgmgr32 winusb)
 
 #Unicode, wchar_t based wide-characters and strings encoded as UTF-16.
 #Multibyte Character Sets (MBCS), char based single or double-byte characters and strings encoded in a locale-specific character set.

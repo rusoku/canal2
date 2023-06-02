@@ -1,6 +1,3 @@
-//
-// Created by gedsi on 31/05/2023.
-//
 
 #include "debug.h"
 

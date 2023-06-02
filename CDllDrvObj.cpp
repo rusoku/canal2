@@ -1,7 +1,7 @@
 /*
  * CANAL interface DLL for RUSOKU technologies for TouCAN, TouCAN Marine, TouCAN Duo USB to CAN bus converter
  *
- * Copyright (C) 2018 Gediminas Simanskis (gediminas@rusoku.com)
+ * Copyright (C) 2005-2023 Gediminas Simanskis (gediminas@rusoku.com)
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published
@@ -17,21 +17,7 @@
  *
  */
 
-#include "stdafx.h"
-#include "CDllDrvObj.h"
-
-
-#ifdef WIN32
-
-#else
-
-void _init() __attribute__((constructor));
-void _fini() __attribute__((destructor));
-
-void _init() { printf("initializing\n"); }
-void _fini() { printf("finishing\n"); }
-
-#endif
+#include "include/CDllDrvObj.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CDllDrvObj
@@ -42,11 +28,9 @@ void _fini() { printf("finishing\n"); }
 CDllDrvObj::CDllDrvObj()
 {
 	m_instanceCounter = 0;
-#ifdef WIN32
-	m_objMutex = CreateMutex(NULL, true, NULL /*L"__CANAL_IXXATVCI_MUTEX__"*/);
-#else
-	pthread_mutex_init(&m_objMutex, NULL);
-#endif
+
+	m_objMutex = CreateMutex(NULL, true, NULL);
+
 
 	// Init the driver array
 	for (int i = 0; i<CANAL_TouCAN_DRIVER_MAX_OPEN; i++) {

@@ -1,12 +1,9 @@
-//
-// Created by gedsi on 31/05/2023.
-//
 
 #ifndef CANAL2_DEBUG_H
 #define CANAL2_DEBUG_H
 
 #define WINDOWS_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>

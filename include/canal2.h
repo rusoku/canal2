@@ -1,13 +1,31 @@
+/*
+ * CANAL interface DLL for RUSOKU technologies for TouCAN, TouCAN Marine, TouCAN Duo USB to CAN bus converter
+ *
+ * Copyright (C) 2005-2023 Gediminas Simanskis (gediminas@rusoku.com)
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; version 3.0 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.
+ *
+ */
+
 //https://learn.microsoft.com/en-us/cpp/build/exporting-from-a-dll-using-declspec-dllexport?view=msvc-170
 //https://learn.microsoft.com/en-us/cpp/build/exporting-functions-from-a-dll-by-ordinal-rather-than-by-name?view=msvc-170
 //https://learn.microsoft.com/en-us/cpp/build/linking-an-executable-to-a-dll?view=msvc-170#determining-which-linking-method-to-use
 //https://learn.microsoft.com/en-us/cpp/build/run-time-library-behavior?view=msvc-170#initializing-a-dll
 //https://stackoverflow.com/questions/39330898/c-winapi-call-exported-function-via-getprocaddress
 
-#ifndef CANAL2_H
-#define CANAL2_H
+#pragma once
 
-#include <windows.h>
+#include <Windows.h>
 
 #define DllExport __declspec(dllexport)
 
@@ -412,5 +430,3 @@ DllExport int WINAPI CanalInterfaceStop(long handle);
 #endif
 
 //DWORD WINAPI ReadThread(LPVOID lParam);
-
-#endif //CANAL2_H

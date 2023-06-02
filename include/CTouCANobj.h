@@ -1,7 +1,7 @@
 /*
  * CANAL interface DLL for RUSOKU technologies for TouCAN, TouCAN Marine, TouCAN Duo USB to CAN bus converter
  *
- * Copyright (C) 2018 Gediminas Simanskis (gediminas@rusoku.com)
+ * Copyright (C) 2005-2023 Gediminas Simanskis (gediminas@rusoku.com)
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published
@@ -21,12 +21,14 @@
 
 #include <winusb.h>
 #include <usb.h>
+#include "canal2.h"
+#include "CTouCANobj.h"
 
-#include "vscp_common/canal.h"
-#include "vscp_common/canal_macro.h"
-#include "vscp_common/canal_a.h"
-#include <cfgmgr32.h>
-#include <stdio.h>
+//#include "vscp_common/canal.h"
+//#include "vscp_common/canal_macro.h"
+//#include "vscp_common/canal_a.h"
+//#include <cfgmgr32.h>
+//#include <stdio.h>
 
 #define    TouCAN_MAX_FIFO	   500000
 
