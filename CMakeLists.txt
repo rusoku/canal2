@@ -23,7 +23,19 @@ set(CMAKE_CXX_COMPILER)
 add_library(canal2 SHARED
         CAN_interface_list.c
         CAN_interface_list.h
-        canal2.c canal2.h debug.c debug.h)
+        canal2.c
+        canal2.h
+        debug.c
+        debug.h
+        CDllList.cpp
+        CDllDrvObj.h
+        CDllDrvObj.cpp
+        CDllList.h
+        CTouCANobj.cpp
+        CTouCANobj.h
+        CTouCANobjCmdMsg.cpp
+        CTouCANobjCmdMsg.h
+        CTouCANobjWinUSB.cpp)
 
 set_property(TARGET canal2 PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
