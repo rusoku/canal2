@@ -19,18 +19,19 @@
 
 #pragma once
 
-#include "CTouCANobj.h"
+#include    <windows.h>
+#include    "CTouCANobj.h"
 
 #define DLL_MAIN_VERSION					1
 #define DLL_MINOR_VERSION					0
-#define DLL_SUB_VERSION				        1
+#define DLL_SUB_VERSION				        5
 
 // This is the vendor string - Change to your own value
 #define CANAL_DLL_VENDOR "Rusoku Technologijos UAB, Lithuania, http://www.rusoku.com"
 
 
 // Max number of open connections
-#define CANAL_TouCAN_DRIVER_MAX_OPEN	128
+#define CANAL_TouCAN_DRIVER_MAX_OPEN	8
 
 /////////////////////////////////////////////////////////////////////////////
 // CDllDrvObj
@@ -39,7 +40,6 @@
 
 class CDllDrvObj
 {
-
 public:
 
 	/// Constructor
@@ -85,11 +85,8 @@ public:
 	CTouCANObj *m_drvObjArray[CANAL_TouCAN_DRIVER_MAX_OPEN];
 
 	/// Mutex for open/close
-#ifdef WIN32	
+
 	HANDLE m_objMutex;
-#else
-	pthread_mutex_t m_objMutex;
-#endif
 
 	/// Counter for users of the interface
 	unsigned long m_instanceCounter;

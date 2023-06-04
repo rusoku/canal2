@@ -17,15 +17,39 @@
  *
  */
 
+//#include "targetver.h"
+//#include <windows.h>
+
+/*
+#include <stdlib.h>
+#include <malloc.h>
+#include "CDllList.h"
+#include "CDllDrvObj.h"
+#include "CTouCANobj.h"
+#include "vscp_common/canal_macro.h"
+#include "vscp_common/canal.h"
+#include "vscp_common/canal_a.h"
+#include <initguid.h>
+#include <tchar.h>
+#include <strsafe.h>
+#include <winusb.h>
+#include <usb.h>
+#include <cfgmgr32.h>
+#include <shlwapi.h>
+#include "MyStrings.h"
+#include "Threads.h"
+*/
+
 #include <windows.h>
 #include <strsafe.h>
 #include <string.h>
 #include <initguid.h>
 #include <cfgmgr32.h>
 #include <heapapi.h>
-#include "CAN_interface_list.h"
+#include "include/CAN_interface_list.h"
+#include "include/canal.h"
 
-const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
+//const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
 
 //struct CAN_DEV_INFO CanDeviceInfo[TOTAL_DEVICES_AVAILABLE+1] = {0};
 
@@ -44,7 +68,7 @@ TCHAR*  pCurrentIterfaceList;
  */
 DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
-    UINT8   canDeviceListIndex = 0;
+//    UINT8   canDeviceListIndex = 0;
     TCHAR   *token1 = NULL;
     TCHAR   *next_token1 = NULL;
     TCHAR   *token2 = NULL;

@@ -19,16 +19,11 @@
 
 #pragma once
 
+#include "windows.h"
 #include <winusb.h>
-#include <usb.h>
-#include "canal2.h"
-#include "CTouCANobj.h"
-
-//#include "vscp_common/canal.h"
-//#include "vscp_common/canal_macro.h"
-//#include "vscp_common/canal_a.h"
-//#include <cfgmgr32.h>
-//#include <stdio.h>
+#include <cstdio>
+#include "CDllList.h"
+#include "canal.h"
 
 #define    TouCAN_MAX_FIFO	   500000
 
@@ -178,8 +173,8 @@ typedef enum
 // Must match "DeviceInterfaceGUIDs" registry value specified in the INF file.
 //
 
-DEFINE_GUID(GUID_DEVINTERFACE_WinUsbF4FS1,
-	0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B);
+//DEFINE_GUID(GUID_DEVINTERFACE_WinUsbF4FS1,
+//	0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B);
 
 
 typedef struct _DEVICE_DATA {
@@ -187,8 +182,8 @@ typedef struct _DEVICE_DATA {
 	BOOL                    HandlesOpen;
 	WINUSB_INTERFACE_HANDLE WinusbHandle;
 	HANDLE                  DeviceHandle;
-	WCHAR                   DevicePath[MAX_PATH];
-	WCHAR				    FoundSerialNumber[MAX_PATH];
+	TCHAR                   DevicePath[MAX_PATH];
+	TCHAR				    FoundSerialNumber[MAX_PATH];
 } DEVICE_DATA, *PDEVICE_DATA;
 
 typedef struct {
@@ -253,7 +248,7 @@ private:
 	// TouCAN configuraton string parameters
 	/////////////////////////////////////////////
 
-	WCHAR		m_SerialNumber[12];
+	TCHAR		m_SerialNumber[12];
 	UINT32		m_DeviceId;
 	UINT16		m_Speed;
 	UINT8		m_Tseg1;
@@ -275,7 +270,7 @@ private:
 	//DEVICE_DATA           deviceData;
 	USB_DEVICE_DESCRIPTOR deviceDesc;
 	BOOL                  noDevice;
-	
+
 #ifdef DEBUG_CANAL
 	FILE* fp;
 	FILE* log;
@@ -314,7 +309,7 @@ public:
 	bool m_bRun;
 
 	//WinUsb handle
-	DEVICE_DATA           deviceData;
+	DEVICE_DATA deviceData;
 
 	// Lists
 	CDllList  *pDllList;

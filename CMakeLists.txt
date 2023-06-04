@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.24)
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
 
-project(canal2 C)
+project(canal2)
 
 #https://devblogs.microsoft.com/cppblog/introducing-the-universal-crt/
 #https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_C_COMPILER)
 set(CMAKE_CXX_COMPILER)
@@ -18,6 +18,11 @@ set(CMAKE_CXX_COMPILER)
 #add_definitions(-DUNICODE)
 #add_definitions(-D_UNICODE)
 #add_definitions(-D_MBCS)
+add_definitions(-D_WIN32_WINNT_WIN10)
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    #add_compile_definitions(canal2 DEBUG_CANAL_CONSOLE)
+endif()
 
 #add_executable(DeviceInterfaceList main.c CAN_interface_list.c CAN_interface_list.h)
 
@@ -25,13 +30,14 @@ include_directories(include)
 
 add_library(canal2 SHARED
         CAN_interface_list.c
-        canal2.cpp
         debug.c
         CDllList.cpp
         CDllDrvObj.cpp
         CTouCANobj.cpp
         CTouCANobjCmdMsg.cpp
-        CTouCANobjWinUSB.cpp)
+        CTouCANobjWinUSB.cpp
+        include/CDllDrvObj.h include/canal.h include/CTouCANobj.h include/CDllList.h
+        canal.cpp include/canal_macro.h utils.c Threads.cpp)
 
 set_property(TARGET canal2 PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")

@@ -17,39 +17,42 @@
  *
  */
 
-//#include "stdafx.h"
-
+#include <windows.h>
+#include <cfgmgr32.h>
+#include <strsafe.h>
+#include "include/CTouCANobj.h"
+#include "include/canal.h"
 
 ///////////////////////////////////////////////////////////////
 // WinUSB  RetrieveDevicePath
 
 HRESULT
 CTouCANObj::RetrieveDevicePath(
-	_Out_bytecap_(BufLen) LPTSTR DevicePath,
+	_Out_bytecap_(BufLen) TCHAR* DevicePath,
 	_In_                  ULONG  BufLen,
 	_Out_opt_             PBOOL  FailureDeviceNotFound, // noDevice
-	_In_				  LPTSTR DeviceSerialNumber // GS
+	_In_				  TCHAR* DeviceSerialNumber // GS
 
 )
 {
 	CONFIGRET  cr = CR_SUCCESS;
 	HRESULT    hr = S_OK;
-	LPTSTR     DeviceInterfaceList = NULL;
-	LPTSTR     CurrentInterface = NULL;
+	LPTSTR    DeviceInterfaceList = nullptr;
+	LPTSTR     CurrentInterface = nullptr;
 	ULONG      DeviceInterfaceListLength = 0;
 
 	//======== GS =====
 
-	LPTSTR	TmpDeviceInterfaceList = 0;
-	LPTSTR  str = 0;
-	LPTSTR  token = 0;
+	LPTSTR	TmpDeviceInterfaceList = nullptr;
+	LPTSTR  str = nullptr;
+	LPTSTR  token = nullptr;
 
-	if (NULL != FailureDeviceNotFound) {
+	if (nullptr != FailureDeviceNotFound) {
 
 		*FailureDeviceNotFound = FALSE;
 	}
 
-	if (NULL != DevicePath) {
+	if (nullptr != DevicePath) {
 
 		*FailureDeviceNotFound = FALSE;
 	}
@@ -64,7 +67,7 @@ CTouCANObj::RetrieveDevicePath(
 
 		cr = CM_Get_Device_Interface_List_Size(&DeviceInterfaceListLength,
 			(LPGUID)&GUID_DEVINTERFACE_WinUsbF4FS1,
-			NULL,
+			nullptr,
 			CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
 
 		if (cr != CR_SUCCESS) {
@@ -76,13 +79,13 @@ CTouCANObj::RetrieveDevicePath(
 			HEAP_ZERO_MEMORY,
 			DeviceInterfaceListLength * sizeof(WCHAR));
 
-		if (DeviceInterfaceList == NULL) {
+		if (DeviceInterfaceList == nullptr) {
 			hr = E_OUTOFMEMORY;
 			break;
 		}
 
 		cr = CM_Get_Device_Interface_List((LPGUID)&GUID_DEVINTERFACE_WinUsbF4FS1,
-			NULL,
+			nullptr,
 			DeviceInterfaceList,
 			DeviceInterfaceListLength,
 			CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
@@ -106,7 +109,7 @@ CTouCANObj::RetrieveDevicePath(
 	//
 	if (*DeviceInterfaceList == TEXT('\0'))
 	{
-		if (NULL != FailureDeviceNotFound)
+		if (nullptr != FailureDeviceNotFound)
 		{
 			*FailureDeviceNotFound = TRUE;
 		}
@@ -120,9 +123,9 @@ CTouCANObj::RetrieveDevicePath(
 
 	TmpDeviceInterfaceList = (LPTSTR)HeapAlloc(GetProcessHeap(),
 		HEAP_ZERO_MEMORY,
-		MAX_PATH * sizeof(WCHAR));
+		MAX_PATH * sizeof(TCHAR));
 
-	if (DeviceInterfaceList == NULL) {
+	if (DeviceInterfaceList == nullptr) {
 		hr = E_OUTOFMEMORY;
 	}
 
@@ -130,22 +133,26 @@ CTouCANObj::RetrieveDevicePath(
 
 	for (CurrentInterface = DeviceInterfaceList;
 		*CurrentInterface;
-		CurrentInterface += wcslen(CurrentInterface) + 1) {
 
-		StringCbCopy(TmpDeviceInterfaceList,
-			wcslen(CurrentInterface),
-			CurrentInterface);
+         CurrentInterface += strlen(CurrentInterface) + 1) {
 
-		str = wcstok_s(TmpDeviceInterfaceList, L"#", &token);
-		str = wcstok_s(NULL, L"#", &token);
-		str = wcstok_s(NULL, L"#", &token);
+        StringCbCopyA(TmpDeviceInterfaceList,
+                  strlen(CurrentInterface),
+                  CurrentInterface);
 
-		//if (wcscmp(str, DeviceSerialNumber) == 0)
-		if ((wcscmp(str, DeviceSerialNumber) == 0) || (wcscmp(L"00000000", DeviceSerialNumber) == 0) || (wcscmp(L"ED000200", DeviceSerialNumber) == 0))
+		str = strtok_s(TmpDeviceInterfaceList, "#", &token);
+		str = strtok_s(nullptr, "#", &token);
+		str = strtok_s(nullptr, "#", &token);
+
+		if (strcmp(str, DeviceSerialNumber) == 0 ||
+            strcmp("00000000", DeviceSerialNumber) == 0 ||
+            strcmp("ED000200", DeviceSerialNumber) == 0)
 		{
-			hr = StringCbCopy(deviceData.FoundSerialNumber,
-							  sizeof(deviceData.FoundSerialNumber),
-				              str);
+            StringCbCopyA(deviceData.FoundSerialNumber,
+                           sizeof(deviceData.FoundSerialNumber) / sizeof(deviceData.FoundSerialNumber[0]),
+                           str);
+
+
 			break;
 		}
 	}
@@ -158,7 +165,7 @@ CTouCANObj::RetrieveDevicePath(
 	//
 	if (*CurrentInterface == TEXT('\0'))
 	{
-		if (NULL != FailureDeviceNotFound)
+		if (nullptr != FailureDeviceNotFound)
 		{
 			*FailureDeviceNotFound = TRUE;
 		}
@@ -188,7 +195,7 @@ HRESULT
 CTouCANObj::OpenDevice(
 	_Out_     PDEVICE_DATA DeviceData,
 	_Out_opt_ PBOOL        FailureDeviceNotFound,
-	_In_	               LPTSTR DeviceSerialNumber
+	_In_	               TCHAR* DeviceSerialNumber
 )
 {
 	HRESULT hr = S_OK;
@@ -210,10 +217,10 @@ CTouCANObj::OpenDevice(
 	DeviceData->DeviceHandle = CreateFile(DeviceData->DevicePath,
 		GENERIC_WRITE | GENERIC_READ,
 		FILE_SHARE_WRITE | FILE_SHARE_READ,
-		NULL,
+		nullptr,
 		OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
-		NULL);
+		nullptr);
 
 	if (INVALID_HANDLE_VALUE == DeviceData->DeviceHandle) {
 
@@ -250,7 +257,5 @@ CTouCANObj::CloseDevice(
 	WinUsb_Free(DeviceData->WinusbHandle);
 	CloseHandle(DeviceData->DeviceHandle);
 	DeviceData->HandlesOpen = FALSE;
-
-	return;
 }
 

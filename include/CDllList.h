@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include    <windows.h>
+
 /*!
 Methods to handle a node for the double linked list
 */

@@ -25,9 +25,21 @@
 
 #pragma once
 
-#include <Windows.h>
+#include <windows.h>
+#include <winnt.h>
 
 #define DllExport __declspec(dllexport)
+
+const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
+
+// Canal Levels
+#define CANAL_LEVEL_STANDARD				1
+#define CANAL_LEVEL_USES_TCPIP				2
+
+// VSCP Daemon client Open types
+#define CANAL_COMMAND_OPEN_VSCP_LEVEL1		1	  // VSCP Level I channel (CAN)
+#define CANAL_COMMAND_OPEN_VSCP_LEVEL2		2	  // VSCP Level II channel
+#define CANAL_COMMAND_OPEN_VSCP_CONTROL		3	  // Daemon Control channel
 
 #define CANAL_MAIN_VERSION      1
 #define CANAL_MINOR_VERSION     0
@@ -252,13 +264,19 @@ extern "C" {
 */
 DllExport   long  WINAPI  CanalOpen(const char *pDevice, unsigned long flags);
 
-/** @name   CanalOpen
+/** @name   CanalClose
     @brief  Close a CANAL chanel.
    	@param  handle Handle to close physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
 DllExport   long  WINAPI  CanalClose(long handle);
 
+/** @name   CanalGetLevel
+    @brief
+   	@param  handle Handle to close physical CANAL channel.
+	@return
+*/
+DllExport  long  WINAPI  CanalGetLevel(long handle);
 
 /**
     @name   CanalSend
@@ -323,7 +341,7 @@ DllExport   int WINAPI  CanalGetStatus(long handle, PCANALSTATUS pCanalStatus);
     @param  pCanStatus Pointer to a CANAL status structure.
     @param  zero on success or error-code on failure.
 */
-DllExport   int WINAPI  CanalGetStatistics(long handle, PCANALSTATUS pCanalStatus);
+DllExport   int WINAPI  CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStatistics);
 
 /**
     @name   CanalSetFilter
@@ -357,28 +375,28 @@ DllExport   int WINAPI  CanalSetBaudrate(long handle, unsigned long baudrate);
     @brief  Get CANAL version.
     @return version for CANAL i/f.
 */
-DllExport   int WINAPI  CanalGetVersion(void);
+DllExport unsigned long WINAPI  CanalGetVersion(void);
 
 /**
     @name   CanalGetDllVersion
     @brief  Get CANAL DLL version.
     @return version for CANAL dll implemention.
 */
-DllExport   int WINAPI  CanalGetDllVersion(void);
+DllExport unsigned long WINAPI  CanalGetDllVersion(void);
 
 /**
     @name   CanalGetDriverInfo
     @brief  Get CANAL driver properties.
     @return driver info string.
 */
-DllExport   int WINAPI  CanalGetVendorString(void);
+DllExport  const char* WINAPI  CanalGetVendorString(void);
 
 /**
     @name   CanalGetDriverInfo
     @brief  Get CANAL vendor string.
     @return vendor string.
 */
-DllExport   int WINAPI  CanalGetDriverInfo(void);
+DllExport const char* WINAPI  CanalGetDriverInfo(void);
 
 /*************************************************************
  *  EXTENDED NON STANDARD API LIST
