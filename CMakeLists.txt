@@ -18,7 +18,7 @@ set(CMAKE_CXX_COMPILER)
 #add_definitions(-DUNICODE)
 #add_definitions(-D_UNICODE)
 #add_definitions(-D_MBCS)
-add_definitions(-D_WIN32_WINNT_WIN10)
+#add_definitions(-D_WIN32_WINNT_WIN10 -DWIN32_LEAN_AND_MEAN)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     #add_compile_definitions(canal2 DEBUG_CANAL_CONSOLE)

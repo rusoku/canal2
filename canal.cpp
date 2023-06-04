@@ -22,10 +22,12 @@
 #include "include/canal_macro.h"
 #include "include/debug.h"
 #include "include/CDllDrvObj.h"
+#include "include/CAN_interface_list.h"
 
 //https://learn.microsoft.com/en-us/windows/win32/Dlls/dynamic-link-library-best-practices
 
 static CDllDrvObj* theApp;
+CAN_DEV_LIST   CanDevList;
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -37,6 +39,19 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             theApp = new CDllDrvObj();
             theApp->InitInstance();
             DebugPrintf("TouCAN DLL Process Attach\n");
+
+            CAN_interface_list(&CanDevList);
+
+            DebugPrintf("\nTotal devices found: = %d\n", CanDevList.canDevCount);
+            DebugPrintf("---\n");
+
+            for(int x = 0; x < CanDevList.canDevCount; x++ ){
+                DebugPrintf("Serial = %s\n", CanDevList.canDevInfo[x].SerialNumber);
+                DebugPrintf("VID = 0x%04X, PID = 0x%04X\n", CanDevList.canDevInfo[x].vid, CanDevList.canDevInfo[x].pid);
+                DebugPrintf("UUID = %s\n", CanDevList.canDevInfo[x].uuid);
+                DebugPrintf("DeviceType = %s\n", CanDevList.canDevInfo[x].DeviceType);
+                DebugPrintf("---\n");
+            }
             break;
         }
         case DLL_THREAD_ATTACH: {
@@ -60,6 +75,18 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         }
     }
     return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//  CanalGetDeviceList
+//
+DllExport int WINAPI CanalGetDeviceList(struct CAN_DEV_LIST* canDeviceList){
+    if(canDeviceList == nullptr)
+        return  CANAL_ERROR_MEMORY;
+
+    CAN_interface_list(canDeviceList);
+    return  CANAL_ERROR_SUCCESS;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -344,25 +344,24 @@ public:
 	/*!
 	Close device
 	*/
-	bool Close (void);
+	bool Close ();
 
 	/*!
 	Start interface
 	*/
-	bool Start (void);
+	bool Start ();
 
 	/*!
 	Stop interface
 	*/
-	bool Stop (void);
-
+	bool Stop ();
 
 	/*!
 	Write a message out to the file
 	@param pcanalMsg Pointer to CAN message
 	@return True on success.
 	*/
-	int WriteMsg (canalMsg *);
+	int WriteMsg (canalMsg*);
 
 	/*
 	Send blocking
@@ -392,7 +391,7 @@ public:
 	Check for data availability
 	@return Number of packages in the queue
 	*/
-	int DataAvailable (void);
+	int DataAvailable();
 
 	/*!
 	Get device status
@@ -406,7 +405,7 @@ public:
 	@param pCanalStatus Pointer to CANAL status structure
 	@return True on success.
 	*/
-	char* GetVendorString(void);
+	char* GetVendorString();
 
 
 	/*!
@@ -448,10 +447,10 @@ public:
 	int GetVendor(unsigned int size, char *vendor);
 
 	// Interface Start
-	int InterfaceStart(void);
+	int InterfaceStart();
 
 	// Interface Stop
-	int InterfaceStop(void);
+	int InterfaceStop();
 
 	CTouCANObj();
 	~CTouCANObj();

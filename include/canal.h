@@ -209,6 +209,21 @@ const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0x
 #define CANUSB_ACCEPTANCE_FILTER_ALL		    0x00000000
 #define CANUSB_ACCEPTANCE_MASK_ALL			    0xFFFFFFFF
 
+#define TOTAL_DEVICES_AVAILABLE 8
+
+struct CAN_DEV_INFO{
+    TCHAR   DeviceType[64];
+    TCHAR   uuid[64];
+    UINT16  vid;
+    UINT16  pid;
+    TCHAR   SerialNumber[64];
+};
+
+struct  CAN_DEV_LIST{
+    struct CAN_DEV_INFO canDevInfo[TOTAL_DEVICES_AVAILABLE];
+    UINT8   canDevCount;
+};
+
 /** @name  CanalMsg
  *  @brief CANAL CAN message structure
 */
@@ -442,6 +457,7 @@ DllExport int WINAPI CanalGetDeviceId(long handle, unsigned long* deviceid);
 DllExport int WINAPI CanalGetVendor(long handle, unsigned int size, char* vendor);
 DllExport int WINAPI CanalInterfaceStart(long handle);
 DllExport int WINAPI CanalInterfaceStop(long handle);
+DllExport int WINAPI CanalGetDeviceList(struct CAN_DEV_LIST* canDeviceList);
 
 #ifdef __cplusplus
 }

@@ -52,7 +52,10 @@ CTouCANObj::CTouCANObj()
 	// DEBUG counter
 	TransmitCounter = 0;
 	ReceiveCounter = 0;
+
 /*
+ *
+ *  https://learn.microsoft.com/en-us/windows/win32/sync/using-mutex-objects
     HANDLE CreateEventA(
     [in, optional] LPSECURITY_ATTRIBUTES lpEventAttributes,
     [in]           BOOL                  bManualReset,
@@ -61,14 +64,13 @@ CTouCANObj::CTouCANObj()
     );
 */
 	// receive list mutex
-	m_receiveListMutex = CreateMutex(nullptr, FALSE, nullptr);
+	m_receiveListMutex =  CreateMutex(nullptr, FALSE, nullptr);
 	m_transmitListMutex = CreateMutex(nullptr, FALSE, nullptr);
 
 	// Events
-	m_receiveDataEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+	m_receiveDataEvent =     CreateEvent(nullptr, TRUE, FALSE, nullptr);
 	m_transmitDataPutEvent = CreateEvent(nullptr, TRUE, TRUE, nullptr);   // default: signaled
 	m_transmitDataGetEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);  // default: not signaled
-
 
 #ifdef DEBUG_CANAL
 	if (!AllocConsole())
@@ -139,8 +141,6 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 	if (nullptr == szFileName)
 		return FALSE;
 
-    DebugPrintf("CTouCANObj::Open - szFileName %s\n", szFileName);
-
 	// Init string not more than 100 symbols
 	if (strlen(szFileName) > sizeof(szDrvParams)/sizeof(szDrvParams[0]))
 		return FALSE;
@@ -149,17 +149,12 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
     StringCbCopyA(szDrvParams, sizeof(szDrvParams) / sizeof(szDrvParams[0]), szFileName);
 
 	// clean whitespace characters
-	//StringTrim(szDrvParams);
-
-    DebugPrintf("CTouCANObj::Open - szDrvParams %s\n", szDrvParams);
+	StringTrim(szDrvParams);
 
 	//------------------ Device ID --------------------------
 
 	//Looking for "Device ID"
-	//szDrvParamsToken = wcstok_s(NULL, L";", &token);
 	szDrvParamsToken = strtok_s(szDrvParams, ";", &token);
-
-	//wprintf(L"String Speed=%s\n", szDrvParamsToken);
 
 	// wrong init string format "Device ID" 
 	if (szDrvParamsToken == nullptr)
@@ -167,14 +162,11 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 	// Convert to integer "Device ID"
 	m_DeviceId = (INT16)strtoul(szDrvParamsToken, &pEnd, 10);
-	//	wprintf(L"m_DeviceId=%d\n", m_DeviceId);
 
 	//------------------ serial number ------------------
 
-		// Looking for "serial number"
-		//szDrvParamsToken = wcstok_s(szDrvParams, L";", &token);
+	// Looking for "serial number"
 	szDrvParamsToken = strtok_s(nullptr, ";", &token);
-	//wprintf(L"SerialNumber=%s\n", szDrvParamsToken);
 
 	// wrong init string format "serial number" 
 	if (szDrvParamsToken == nullptr)
@@ -191,7 +183,6 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 		//Looking for "speed"
 	szDrvParamsToken = strtok_s(nullptr, ";", &token);
-	//wprintf(L"String Speed=%s\n", szDrvParamsToken);
 
 	// wrong init string format "speed" 
 	if (szDrvParamsToken == nullptr)
@@ -199,7 +190,6 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 	// Convert to integer "speed"
 	m_Speed = (INT16)strtoul(szDrvParamsToken, &pEnd, 10);
-	//wprintf(L"Converted Speed=%d\n", m_Speed);
 
 //------------------ ext parameters if(speed == 0) ------------------
 	if (m_Speed == 0) {
@@ -207,7 +197,6 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 				//Looking for "tseg1"
 		szDrvParamsToken = strtok_s(nullptr, ";", &token);
-		//wprintf(L"String tseg1=%s\n", szDrvParamsToken);
 
 		// wrong init string format "Tseg1" 
 		if (szDrvParamsToken == nullptr)
@@ -215,13 +204,11 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 		// Convert to integer "Tseg1"
 		m_Tseg1 = (INT8)strtoul(szDrvParamsToken, &pEnd, 10);
-		//wprintf(L"Converted Tseg1=%d\n", m_Tseg1);
 
 //---------------------------- Tseg2 ---------------------------------
 
 		//Looking for "tseg2"
 		szDrvParamsToken = strtok_s(nullptr, ";", &token);
-		//wprintf(L"String Tseg2=%s\n", szDrvParamsToken);
 
 		// wrong init string format "Tseg2" 
 		if (szDrvParamsToken == nullptr)
@@ -229,13 +216,11 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 		// Convert to integer "Tseg2"
 		m_Tseg2 = (INT8)strtoul(szDrvParamsToken, &pEnd, 10);
-		//wprintf(L"Converted Tseg2=%d\n", m_Tseg2);
 
 //--------------------------- Sjw -------------------------------------
 
 		//Looking for "Sjw"
 		szDrvParamsToken = strtok_s(nullptr, ";", &token);
-		//wprintf(L"String Sjw=%s\n", szDrvParamsToken);
 
 		// wrong init string format "Sjw" 
 		if (szDrvParamsToken == nullptr)
@@ -243,13 +228,11 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 		// Convert to integer "Sjw"
 		m_Sjw = (INT8)strtoul(szDrvParamsToken, &pEnd, 10);
-		//wprintf(L"Converted Sjw=%d\n", m_Sjw);
 
 //--------------------------- Brp -------------------------------------
 
 		//Looking for "Brp"
 		szDrvParamsToken = strtok_s(nullptr, ";", &token);
-		//wprintf(L"String Brp=%s\n", szDrvParamsToken);
 
 		// wrong init string format "Brp" 
 		if (szDrvParamsToken == nullptr)
@@ -257,7 +240,6 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 
 		// Convert to integer "Brp"
 		m_Brp = (INT16)strtoul(szDrvParamsToken, &pEnd, 10);
-		//wprintf(L"Converted Brp=%d\n", m_Brp);
 	}
 	else {  //if (m_Speed == 0)
 
@@ -492,7 +474,7 @@ bool CTouCANObj::Stop()
 
 bool CTouCANObj::SetFilter(unsigned long filter)
 {
-	//m_filter = filter;
+	m_filter = filter;
 
 	// Must be open
 	if (m_bOpen == FALSE)
@@ -506,7 +488,7 @@ bool CTouCANObj::SetFilter(unsigned long filter)
 
 bool CTouCANObj::SetMask(unsigned long mask)
 {
-	//m_mask = mask;
+	m_mask = mask;
 
 	 //Must be open
 	  if (m_bOpen == FALSE)
@@ -588,13 +570,13 @@ int CTouCANObj::GetStatistics(PCANALSTATISTICS pCanalStatistics)
 //	dataAvailable
 //
 
-int CTouCANObj::DataAvailable(void)
+int CTouCANObj::DataAvailable()
 {	
     //Must be open
 	if (!m_bOpen) return 0;
 	if (!m_bRun) return 0;
 
-	return  m_receiveList.nCount;
+	return  (int)m_receiveList.nCount;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -718,7 +700,6 @@ int CTouCANObj::ReadMsgBlocking(canalMsg *pMsg, ULONG	 Timeout)
 int CTouCANObj::WriteMsg(canalMsg *pMsg)
 {
 	ULONG  cnt;
-	DWORD res;
 
 	// Must be a message pointer
 	if (nullptr == pMsg)
@@ -731,8 +712,6 @@ int CTouCANObj::WriteMsg(canalMsg *pMsg)
 	if (!m_bRun)
 		return CANAL_ERROR_HARDWARE;
 
-    DebugPrintf("pDrvObj->WriteMsg(pCanalMsg: begin\n");
-
 	LOCK_MUTEX(m_transmitListMutex);
 	//cnt = pDllList->GetNodeCount(&m_transmitList);
 	cnt = m_transmitList.nCount;
@@ -741,29 +720,20 @@ int CTouCANObj::WriteMsg(canalMsg *pMsg)
 	if (cnt >= TouCAN_MAX_FIFO)
 	    return CANAL_ERROR_FIFO_FULL;
 
-	 //dllnode *pNode = new dllnode;
-	 //canalMsg *pcanalMsg = new canalMsg;
+	auto pNode = new dllnode;
+	auto pcanalMsg = new canalMsg;
 
-	 //pNode->pObject = pcanalMsg;
-	 //pNode->pKey = nullptr;
-	 //pNode->pstrKey = nullptr;
+	pNode->pObject = pcanalMsg;
+	pNode->pKey = nullptr;
+	pNode->pstrKey = nullptr;
 
-	 //memcpy_s(pcanalMsg, sizeof(canalMsg), pMsg, sizeof(canalMsg));
+	memcpy_s(pcanalMsg, sizeof(canalMsg), pMsg, sizeof(canalMsg));
 
-	 LOCK_MUTEX(m_transmitListMutex);
-	 //res = pDllList->AddNode(&m_transmitList, pNode);
-	 UNLOCK_MUTEX(m_transmitListMutex);
+	LOCK_MUTEX(m_transmitListMutex);
+	pDllList->AddNode(&m_transmitList, pNode);
+	UNLOCK_MUTEX(m_transmitListMutex);
 
-	 if (res != TRUE)
-	 {
-		 //delete pNode;
-		 //delete pcanalMsg;
-		 //return CANAL_ERROR_MEMORY;
-	 }
-
-	 SetEvent(m_transmitDataGetEvent);
-
-    DebugPrintf("pDrvObj->WriteMsg(pCanalMsg: end\n");
+    SetEvent(m_transmitDataGetEvent);
 
 	return CANAL_ERROR_SUCCESS;
 }

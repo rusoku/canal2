@@ -21,6 +21,7 @@
 #include "include/canal.h"
 #include "include/canal_macro.h"
 #include "include/CTouCANobj.h"
+#include "include/debug.h"
 
 void workThreadTransmit(void *pObject);
 void workThreadReceive(void *pObject);
@@ -42,9 +43,7 @@ void workThreadTransmit(void *pObject)
 	DWORD   dw;
 	UINT32  ErrorCounter = 0;
 
-	CTouCANObj * pobj = (CTouCANObj *)pObject;
-
-	//wprintf(L"TX_Thread_Begin\n");
+	auto pobj = (CTouCANObj *)pObject;
 
 	timeout = 500;
 	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x01, PIPE_TRANSFER_TIMEOUT, sizeof(ULONG), &timeout);
@@ -57,13 +56,10 @@ void workThreadTransmit(void *pObject)
 		cnt = pobj->m_transmitList.nCount;
 		UNLOCK_MUTEX(pobj->m_transmitListMutex);
 
-		//wprintf(L"TxThread=cnt%d\n", cnt);
-
 		if (cnt == 0)
 		{
 			if (WaitForSingleObject(pobj->m_transmitDataGetEvent, 500) != WAIT_OBJECT_0) // default: NOT signaled
-			{  
-				//wprintf(L"TxThread: WaitForSingleObject\n");
+			{
 				continue;
 			}
 		}
@@ -73,8 +69,6 @@ void workThreadTransmit(void *pObject)
 		//cnt = pobj->pDllList->GetNodeCount(&pobj->m_transmitList);
 		cnt = pobj->m_transmitList.nCount;
 		UNLOCK_MUTEX(pobj->m_transmitListMutex);
-
-		//wprintf(L"TxThread=cnt%d\n", cnt);
 
 		if (cnt == 0)
 			continue;
@@ -112,16 +106,15 @@ void workThreadTransmit(void *pObject)
 			LOCK_MUTEX(pobj->m_transmitListMutex);
 			pobj->pDllList->RemoveNode(&pobj->m_transmitList, pobj->m_transmitList.pHead);
 			UNLOCK_MUTEX(pobj->m_transmitListMutex);
-			//wprintf(L"TransmitCounter=%I64d\n", ++pobj->TransmitCounter);
+
 			ResetEvent(pobj->m_transmitDataGetEvent);
 			SetEvent(pobj->m_transmitDataPutEvent);
 		}
 
 		do {
-			//wprintf(L"WinUsb_WritePipe=");
-			if (WinUsb_WritePipe(pobj->deviceData.WinusbHandle, 0x01, &TxDataBuf[0], index, &Transfered, NULL) == TRUE)
+			if (WinUsb_WritePipe(pobj->deviceData.WinusbHandle, 0x01, &TxDataBuf[0], index, &Transfered, nullptr) == TRUE)
 			{
-				//wprintf(L"OK\n");
+				//DebugPrintf("TxThread WinUsb_WritePipe: \n");
 				break;
 			}
 			else
@@ -145,8 +138,6 @@ void workThreadTransmit(void *pObject)
 		} while (pobj->m_bRunTxTask);		
 	}
 
-	//wprintf(L"TX_Thread_End\n");
-
 	ExitThread(errorCode);
 }
 
@@ -166,16 +157,9 @@ void workThreadReceive(void *pObject)
 	canalMsg *pMsg = nullptr;
 	dllnode  *pNode = nullptr;
 	DWORD   dw;
-	//HRESULT hr;
 	UINT32  ErrorCounter = 0;
 
-//	DWORD    dwWaitResult;
-
-	//ULONGLONG	counter = 0;
-
-	CTouCANObj * pobj = (CTouCANObj *)pObject;
-
-	//wprintf(L"RX_Thread_Begin\n");
+	auto pobj = (CTouCANObj *)pObject;
 
 	timeout = 500;
 	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x81, PIPE_TRANSFER_TIMEOUT, sizeof(ULONG), &timeout);
@@ -183,8 +167,7 @@ void workThreadReceive(void *pObject)
 
 	while (pobj->m_bRunRxTask)
 	{
-		//wprintf(L"READ DATA from PIPE 0x81: ");
-		if (WinUsb_ReadPipe(pobj->deviceData.WinusbHandle, 0x81, &RxDataBuf[0], 64, &Transfered, NULL) != TRUE)
+		if (WinUsb_ReadPipe(pobj->deviceData.WinusbHandle, 0x81, &RxDataBuf[0], 64, &Transfered, nullptr) != TRUE)
 		{
 			dw = GetLastError();
 
@@ -197,10 +180,6 @@ void workThreadReceive(void *pObject)
 				 pobj->m_bRun = FALSE;
 				}
 			}
-			//if (dw == ERROR_SEM_TIMEOUT)
-			//{
-			//}
-
 			continue;
 		}
 
