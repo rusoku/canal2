@@ -212,11 +212,12 @@ const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0x
 #define TOTAL_DEVICES_AVAILABLE 8
 
 struct CAN_DEV_INFO{
-    TCHAR   DeviceType[64];
-    TCHAR   uuid[64];
+    TCHAR   DevicePath[MAX_PATH];
+    TCHAR   DeviceType[MAX_PATH];
+    TCHAR   uuid[MAX_PATH];
     UINT16  vid;
     UINT16  pid;
-    TCHAR   SerialNumber[64];
+    TCHAR   SerialNumber[MAX_PATH];
 };
 
 struct  CAN_DEV_LIST{
@@ -227,6 +228,7 @@ struct  CAN_DEV_LIST{
 /** @name  CanalMsg
  *  @brief CANAL CAN message structure
 */
+#pragma pack(1)
 typedef struct structCanalMsg {
     unsigned long flags;			    // CAN message flags
     unsigned long obid;			    	// Used by driver for channel info etc.
@@ -236,6 +238,7 @@ typedef struct structCanalMsg {
     unsigned long timestamp;		    // Relative time stamp for package in microseconds
 } canalMsg;
 typedef canalMsg*   PCANALMSG;
+#pragma pack()
 
 /** @name  CanalStatistics
  *  @brief CANAL statistics structure

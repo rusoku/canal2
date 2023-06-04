@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
 
-project(canal2)
+project(canal)
 
 #https://devblogs.microsoft.com/cppblog/introducing-the-universal-crt/
 #https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170
@@ -21,14 +21,15 @@ set(CMAKE_CXX_COMPILER)
 #add_definitions(-D_WIN32_WINNT_WIN10 -DWIN32_LEAN_AND_MEAN)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    #add_compile_definitions(canal2 DEBUG_CANAL_CONSOLE)
+    #add_compile_definitions(canal DEBUG_CANAL)
+    #set_target_properties(canal PROPERTIES SUFFIX "d")
 endif()
 
 #add_executable(DeviceInterfaceList main.c CAN_interface_list.c CAN_interface_list.h)
 
 include_directories(include)
 
-add_library(canal2 SHARED
+add_library(canal SHARED
         CAN_interface_list.c
         debug.c
         CDllList.cpp
@@ -39,10 +40,12 @@ add_library(canal2 SHARED
         include/CDllDrvObj.h include/canal.h include/CTouCANobj.h include/CDllList.h
         canal.cpp include/canal_macro.h utils.c Threads.cpp)
 
-set_property(TARGET canal2 PROPERTY
+set_property(TARGET canal PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-target_link_libraries(canal2 cfgmgr32 winusb)
+target_link_libraries(canal cfgmgr32 winusb)
+set_target_properties(canal PROPERTIES OUTPUT_NAME "canal$<$<CONFIG:Debug>:d>")
+
 
 #Unicode, wchar_t based wide-characters and strings encoded as UTF-16.
 #Multibyte Character Sets (MBCS), char based single or double-byte characters and strings encoded in a locale-specific character set.
