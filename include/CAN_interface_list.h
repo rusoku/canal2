@@ -20,9 +20,7 @@
 #pragma once
 
 #include <windows.h>
-#include "include/canal.h"
 
-/*
 #define TOTAL_DEVICES_AVAILABLE 8
 
 struct CAN_DEV_INFO{
@@ -33,11 +31,10 @@ struct CAN_DEV_INFO{
     TCHAR   SerialNumber[64];
 };
 
-struct  CAN_DEV_LIST{
+struct CAN_DEV_LIST{
     struct CAN_DEV_INFO canDevInfo[TOTAL_DEVICES_AVAILABLE];
     UINT8   canDevCount;
 };
-*/
 
 
 /*

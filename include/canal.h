@@ -211,24 +211,24 @@ const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0x
 
 #define TOTAL_DEVICES_AVAILABLE 8
 
-struct CAN_DEV_INFO{
-    TCHAR   DevicePath[MAX_PATH];
-    TCHAR   DeviceType[MAX_PATH];
-    TCHAR   uuid[MAX_PATH];
-    UINT16  vid;
-    UINT16  pid;
-    TCHAR   SerialNumber[MAX_PATH];
-};
+typedef struct struct_CANAL_DEV_INFO {
+    char   DevicePath[256];
+    char   DeviceType[256];
+    char   uuid[256];
+    unsigned int    vid;
+    unsigned int    pid;
+    char   SerialNumber[256];
+} canal_dev_info, *pcanal_dev_info;
 
-struct  CAN_DEV_LIST{
-    struct CAN_DEV_INFO canDevInfo[TOTAL_DEVICES_AVAILABLE];
-    UINT8   canDevCount;
-};
+typedef struct struct_CANAL_DEV_LIST{
+    canal_dev_info canDevInfo[TOTAL_DEVICES_AVAILABLE];
+    unsigned int   canDevCount;
+} canal_dev_list, *pcanal_dev_list;
 
 /** @name  CanalMsg
  *  @brief CANAL CAN message structure
 */
-#pragma pack(1)
+
 typedef struct structCanalMsg {
     unsigned long flags;			    // CAN message flags
     unsigned long obid;			    	// Used by driver for channel info etc.
@@ -238,7 +238,6 @@ typedef struct structCanalMsg {
     unsigned long timestamp;		    // Relative time stamp for package in microseconds
 } canalMsg;
 typedef canalMsg*   PCANALMSG;
-#pragma pack()
 
 /** @name  CanalStatistics
  *  @brief CANAL statistics structure
@@ -460,7 +459,7 @@ DllExport int WINAPI CanalGetDeviceId(long handle, unsigned long* deviceid);
 DllExport int WINAPI CanalGetVendor(long handle, unsigned int size, char* vendor);
 DllExport int WINAPI CanalInterfaceStart(long handle);
 DllExport int WINAPI CanalInterfaceStop(long handle);
-DllExport int WINAPI CanalGetDeviceList(struct CAN_DEV_LIST* canDeviceList);
+DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList);
 
 #ifdef __cplusplus
 }

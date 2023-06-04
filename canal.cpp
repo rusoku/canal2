@@ -80,13 +80,20 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 ///////////////////////////////////////////////////////////////////////////////
 //  CanalGetDeviceList
 //
-DllExport int WINAPI CanalGetDeviceList(struct CAN_DEV_LIST* canDeviceList){
-    if(canDeviceList == nullptr)
+DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList){
+    if(canalDeviceList == nullptr)
         return  CANAL_ERROR_MEMORY;
 
-    CAN_interface_list(canDeviceList);
-    return  CANAL_ERROR_SUCCESS;
+    CAN_DEV_LIST canDeviceList = {0};
 
+    CAN_interface_list(&canDeviceList);
+
+    //StringCbCopyA(szDrvParams, sizeof(szDrvParams) / sizeof(szDrvParams[0]), szFileName);
+    //canalDeviceList
+
+    canalDeviceList->canDevCount = canDeviceList.canDevCount;
+
+    return  CANAL_ERROR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
