@@ -838,7 +838,7 @@ int CTouCANObj::WriteMsgBlocking(canalMsg *pMsg, ULONG Timeout)
 // writeMsg blocking
 //
 
-char* CTouCANObj::GetVendorString(void)
+char* CTouCANObj::GetVendorString()
 {
 	TCHAR	 Vendor[256];
 	UINT32	 HardwareVersion;
@@ -854,15 +854,9 @@ char* CTouCANObj::GetVendorString(void)
 		return str;
 
 	TouCAN_get_hardware_version(&HardwareVersion);
-	//wprintf(L"Hardware version= %08X\n", HardwareVersion);
-
-	TouCAN_get_firmware_version(&FirmwareVersion);	
-	//wprintf(L"Firmware version= %08X\n", FirmwareVersion);
-
+	TouCAN_get_firmware_version(&FirmwareVersion);
 	TouCAN_get_vendor(256, Vendor);
-	//wprintf(L"VENDOR ID= %S\n", Vendor);
 
-	//sprintf_s(HardwareVersionStr, sizeof(str), "%d",(UINT8) HardwareVersion);
 	sprintf_s(HardwareVersionStr, sizeof(str), "%d.%d.%d", (UINT8)(HardwareVersion >> 24), (UINT8)(HardwareVersion >> 16), (UINT8)(HardwareVersion >> 8));
 	sprintf_s(FirmwareVersionStr, sizeof(str), "%d.%d.%d", (UINT8)(FirmwareVersion >> 24), (UINT8)(FirmwareVersion >> 16), (UINT8)(FirmwareVersion >> 8));
 
