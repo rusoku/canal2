@@ -55,11 +55,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             break;
         }
         case DLL_THREAD_ATTACH: {
-            //DebugPrintf("TouCAN DLL Thread Attach\n");
             break;
         }
         case DLL_THREAD_DETACH: {
-            //DebugPrintf("TouCAN DLL Thread Detach\n");
             break;
         }
         case DLL_PROCESS_DETACH: {
@@ -69,8 +67,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             }
             theApp->RemoveAllObjects();
             delete theApp;
-            // Perform any necessary cleanup.
-            default:
+            break;
+        default:
             break;
         }
     }
@@ -87,10 +85,6 @@ DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList){
     CAN_DEV_LIST canDeviceList = {0};
 
     CAN_interface_list(&canDeviceList);
-
-    //StringCbCopyA(szDrvParams, sizeof(szDrvParams) / sizeof(szDrvParams[0]), szFileName);
-    //canalDeviceList
-
     canalDeviceList->canDevCount = canDeviceList.canDevCount;
 
     return  CANAL_ERROR_SUCCESS;

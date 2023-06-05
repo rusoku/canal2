@@ -41,7 +41,6 @@ TCHAR*  pCurrentIterfaceList;
  */
 DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
-//    UINT8   canDeviceListIndex = 0;
     TCHAR   *token1 = NULL;
     TCHAR   *next_token1 = NULL;
     TCHAR   *token2 = NULL;
@@ -105,7 +104,6 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
         {
             /* Device ID */
             token1 = strtok_s(pCurrentIterfaceList,"#", &next_token1);
-            //printf("token = %s\n", token1);
             StringCbCopyA(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType,
                           sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType)/sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].DeviceType[0]),
                           token1);
@@ -115,10 +113,8 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
             /* VID, PID */
             token1 = strtok_s(NULL,"#", &next_token1);
-            //printf("token = %s\n", token1);
             lstrcpynA(tmp_string, token1, sizeof(tmp_string)/sizeof(tmp_string[0]));
             token2 = strtok_s(tmp_string,"&", &next_token2);
-                //printf("VID = %s\n", token2);
 
             canDeviceList->canDevInfo[CurrentDeviceIndex].vid = (UINT16) strtoul(token2+4, NULL, 16);
 
@@ -126,7 +122,6 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
                 goto next_device;;
 
             token2 = strtok_s(NULL,"&", &next_token2);
-                //printf("PID = %s\n", token2);
 
             canDeviceList->canDevInfo[CurrentDeviceIndex].pid = (UINT16) strtoul(token2+4, NULL, 16);
 
@@ -135,7 +130,6 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
             /* Serial */
             token1 = strtok_s(NULL,"#", &next_token1);
-            //printf("token = %s\n", token1);
             StringCbCopyA(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber,
                           sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber)/sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].SerialNumber[0]),
                           token1);
@@ -145,7 +139,6 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
             /* UUID */
             token1 = strtok_s(NULL,"#", &next_token1);
-            //printf("token = %s\n", token1);
 
             StringCbCopyA(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid,
                           sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid)/sizeof(canDeviceList->canDevInfo[CurrentDeviceIndex].uuid[0]),
@@ -162,7 +155,6 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
     clean0:
     canDeviceList->canDevCount = CurrentDeviceIndex;
     HeapFree(GetProcessHeap(), 0, device_interface_list);
-    //printf("TotalDevicesFound = %d\n", CurrentDeviceIndex);
 
     return (HRESULT)hr;
 }
