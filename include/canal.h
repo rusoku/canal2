@@ -17,17 +17,12 @@
  *
  */
 
-//https://learn.microsoft.com/en-us/cpp/build/exporting-from-a-dll-using-declspec-dllexport?view=msvc-170
-//https://learn.microsoft.com/en-us/cpp/build/exporting-functions-from-a-dll-by-ordinal-rather-than-by-name?view=msvc-170
-//https://learn.microsoft.com/en-us/cpp/build/linking-an-executable-to-a-dll?view=msvc-170#determining-which-linking-method-to-use
-//https://learn.microsoft.com/en-us/cpp/build/run-time-library-behavior?view=msvc-170#initializing-a-dll
-//https://stackoverflow.com/questions/39330898/c-winapi-call-exported-function-via-getprocaddress
-
 #pragma once
 
+#ifdef WIN32
 #define DllExport __declspec(dllexport)
-
-//const GUID GUID_DEVINTERFACE_WinUsbF4FS1 = {0xFD361109, 0x858D, 0x4F6F, 0x81, 0xEE, 0xAA, 0xB5, 0xD6, 0xCB, 0xF0, 0x6B};
+#define WINAPI   __stdcall
+#endif
 
 // Canal Levels
 #define CANAL_LEVEL_STANDARD				1
@@ -40,7 +35,7 @@
 
 #define CANAL_MAIN_VERSION      1
 #define CANAL_MINOR_VERSION     0
-#define CANAL_SUB_VERSION       14
+#define CANAL_SUB_VERSION       15
 
 #define CAN_MAX_STANDARD_ID     0x7ff
 #define CAN_MAX_EXTENDED_ID     0x1fffffff
@@ -206,19 +201,17 @@
 #define CANUSB_ACCEPTANCE_FILTER_ALL		    0x00000000
 #define CANUSB_ACCEPTANCE_MASK_ALL			    0xFFFFFFFF
 
-#define TOTAL_DEVICES_AVAILABLE 8
+#define CANAL_DEVLIST_SIZE_MAX 64
 
 typedef struct struct_CANAL_DEV_INFO {
-    char   DevicePath[256];
-    char   DeviceType[256];
-    char   uuid[256];
+    unsigned int    DeviceId;
     unsigned int    vid;
     unsigned int    pid;
-    char   SerialNumber[256];
+    char            SerialNumber[10];
 } canal_dev_info, *pcanal_dev_info;
 
 typedef struct struct_CANAL_DEV_LIST{
-    canal_dev_info canDevInfo[TOTAL_DEVICES_AVAILABLE];
+    canal_dev_info canDevInfo[CANAL_DEVLIST_SIZE_MAX];
     unsigned int   canDevCount;
 } canal_dev_list, *pcanal_dev_list;
 
@@ -456,7 +449,7 @@ DllExport int WINAPI CanalGetDeviceId(long handle, unsigned long* deviceid);
 DllExport int WINAPI CanalGetVendor(long handle, unsigned int size, char* vendor);
 DllExport int WINAPI CanalInterfaceStart(long handle);
 DllExport int WINAPI CanalInterfaceStop(long handle);
-DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList);
+DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList, int canalDeviceListSize);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 /*
  * CANAL interface DLL for RUSOKU technologies for TouCAN, TouCAN Marine, TouCAN Duo USB to CAN bus converter
  *
+ * Copyright (C) 2000-2008 Ake Hedman, eurosource, <akhe@eurosource.se>
  * Copyright (C) 2005-2023 Gediminas Simanskis (gediminas@rusoku.com)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -23,6 +24,7 @@
 #include "include/debug.h"
 #include "include/CDllDrvObj.h"
 #include "include/CAN_interface_list.h"
+#include <strsafe.h>
 
 //https://learn.microsoft.com/en-us/windows/win32/Dlls/dynamic-link-library-best-practices
 
@@ -38,20 +40,19 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         case DLL_PROCESS_ATTACH: {
             theApp = new CDllDrvObj();
             theApp->InitInstance();
-            DebugPrintf("TouCAN DLL Process Attach\n");
+            //DebugPrintf("TouCAN DLL Process Attach\n");
 
+            /*
             CAN_interface_list(&CanDevList);
 
             DebugPrintf("\nTotal devices found: = %d\n", CanDevList.canDevCount);
-            DebugPrintf("---\n");
-
             for(int x = 0; x < CanDevList.canDevCount; x++ ){
                 DebugPrintf("Serial = %s\n", CanDevList.canDevInfo[x].SerialNumber);
                 DebugPrintf("VID = 0x%04X, PID = 0x%04X\n", CanDevList.canDevInfo[x].vid, CanDevList.canDevInfo[x].pid);
                 DebugPrintf("UUID = %s\n", CanDevList.canDevInfo[x].uuid);
                 DebugPrintf("DeviceType = %s\n", CanDevList.canDevInfo[x].DeviceType);
                 DebugPrintf("---\n");
-            }
+            }*/
             break;
         }
         case DLL_THREAD_ATTACH: {
@@ -61,7 +62,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             break;
         }
         case DLL_PROCESS_DETACH: {
-            DebugPrintf("TouCAN DLL Process Detach\n");
+            //DebugPrintf("TouCAN DLL Process Detach\n");
             if (lpReserved != nullptr) {
                 break; // do not do cleanup if process termination scenario
             }
@@ -78,15 +79,26 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 ///////////////////////////////////////////////////////////////////////////////
 //  CanalGetDeviceList
 //
-DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList){
+DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList, int canalDeviceListSize){
     if(canalDeviceList == nullptr)
         return  CANAL_ERROR_MEMORY;
 
     CAN_DEV_LIST canDeviceList = {0};
+    unsigned int devcnt;
 
     CAN_interface_list(&canDeviceList);
-    canalDeviceList->canDevCount = canDeviceList.canDevCount;
 
+    devcnt = canDeviceList.canDevCount % CANAL_DEVLIST_SIZE_MAX;
+    canalDeviceList->canDevCount = devcnt;
+
+    for(int x = 0; x < devcnt; x++){
+        canalDeviceList->canDevInfo[x].DeviceId = 0;
+        canalDeviceList->canDevInfo[x].pid = canDeviceList.canDevInfo[x].pid;
+        canalDeviceList->canDevInfo[x].vid = canDeviceList.canDevInfo[x].vid;
+        StringCbCopyA(canalDeviceList->canDevInfo[x].SerialNumber,
+                      sizeof(canalDeviceList->canDevInfo[x].SerialNumber)/sizeof(canalDeviceList->canDevInfo[x].SerialNumber[0]),
+                      canDeviceList.canDevInfo[x].SerialNumber);
+    }
     return  CANAL_ERROR_SUCCESS;
 }
 
