@@ -21,7 +21,9 @@
 #include <cfgmgr32.h>
 #include <strsafe.h>
 #include "include/CTouCANobj.h"
+#include "include/CTouCANobj.h"
 #include "include/canal.h"
+#include "include/guid.h"
 
 ///////////////////////////////////////////////////////////////
 // WinUSB  RetrieveDevicePath

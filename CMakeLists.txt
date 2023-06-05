@@ -27,8 +27,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 #add_executable(DeviceInterfaceList main.c CAN_interface_list.c CAN_interface_list.h)
-
-include_directories(include)
+#include_directories(include)
 
 add_library(canal SHARED
         CAN_interface_list.c
