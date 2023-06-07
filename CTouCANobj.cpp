@@ -1075,8 +1075,9 @@ int CTouCANObj::InterfaceStop()
 		return	CANAL_ERROR_COMMUNICATION;
 
     // signal blocking reception event
-    if (m_receiveDataEvent != nullptr)
-        (void)SetEvent(m_receiveDataEvent);
+    if (m_receiveDataEvent != nullptr) {
+        (void) SetEvent(m_receiveDataEvent);
+    }
 
 	return CANAL_ERROR_SUCCESS;
 }

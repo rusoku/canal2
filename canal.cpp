@@ -34,7 +34,7 @@ SOFTWARE.
 //https://learn.microsoft.com/en-us/windows/win32/Dlls/dynamic-link-library-best-practices
 
 static CDllDrvObj* theApp;
-CAN_DEV_LIST   CanDevList;
+//CAN_DEV_LIST   CanDevList;
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -88,7 +88,7 @@ DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList, int can
     if(canalDeviceList == nullptr)
         return  CANAL_ERROR_MEMORY;
 
-    CAN_DEV_LIST canDeviceList = {0};
+    CAN_DEV_LIST canDeviceList = {};
     unsigned int devcnt;
 
     CAN_interface_list(&canDeviceList);

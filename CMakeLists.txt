@@ -7,19 +7,31 @@ project(canal)
 #https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_C_COMPILER)
 set(CMAKE_CXX_COMPILER)
+
+cmake_host_system_information(RESULT PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
+message(STATUS "${PRETTY_NAME}")
+
+cmake_host_system_information(RESULT DISTRO QUERY DISTRIB_INFO)
+
+foreach(VAR IN LISTS DISTRO)
+    message(STATUS "${VAR}=`${${VAR}}`")
+endforeach()
 
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 #set(LLVM_STATIC_LINK_CXX_STDLIB true)
 
 #add_definitions(-DUNICODE)
 #add_definitions(-D_UNICODE)
-#add_definitions(-D_MBCS)
+add_definitions(-D_MBCS)
 add_definitions(-D_WIN32_WINNT_WIN10)
 #add_definitions(-DWIN32_LEAN_AND_MEAN)
+#add_definitions(-DENABLE_SSE2=ON)
+
+add_compile_options(-Wall -Wextra -Wpedantic)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     #add_compile_definitions(canal DEBUG_CANAL)
@@ -47,9 +59,4 @@ target_link_libraries(canal cfgmgr32 winusb)
 set_target_properties(canal PROPERTIES OUTPUT_NAME "canal$<$<CONFIG:Debug>:d>")
 
 
-#Unicode, wchar_t based wide-characters and strings encoded as UTF-16.
-#Multibyte Character Sets (MBCS), char based single or double-byte characters and strings encoded in a locale-specific character set.
 
-#SET(TOOLCHAIN «/usr/local/arm/gcc-arm/bin/»)
-#SET(CMAKE_C_COMPILER ${TOOLCHAIN}/arm-none-eabi-gcc)
-#SET(CMAKE_CXX_COMPILER ${TOOLCHAIN}/arm-none-eabi-gcc)
