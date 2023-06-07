@@ -96,7 +96,7 @@ DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList, int can
     devcnt = canDeviceList.canDevCount % CANAL_DEVLIST_SIZE_MAX;
     canalDeviceList->canDevCount = devcnt;
 
-    for(int x = 0; x < devcnt; x++){
+    for(unsigned int x = 0; x < devcnt; x++){
         canalDeviceList->canDevInfo[x].DeviceId = 0;
         canalDeviceList->canDevInfo[x].pid = canDeviceList.canDevInfo[x].pid;
         canalDeviceList->canDevInfo[x].vid = canDeviceList.canDevInfo[x].vid;

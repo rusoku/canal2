@@ -270,8 +270,6 @@ BOOL CDllList::AddNode(struct DoubleLinkedList *pdll, struct dllnode *pInsertNod
 
 BOOL CDllList::RemoveNode(struct DoubleLinkedList *pdll, struct dllnode *pNode)
 {
-    //void** pVoid;
-
 	struct dllnode *pNext;
 	struct dllnode *pPrev;
 
@@ -282,10 +280,9 @@ BOOL CDllList::RemoveNode(struct DoubleLinkedList *pdll, struct dllnode *pNode)
 
 		// Remove the object
 		if (nullptr != pNode->pObject) {
-
-            //pVoid = &pNode->pObject;
-            //delete  pVoid;
-
+            //auto pobj = pNode->pObject;
+            //delete pobj;
+            delete  pNode->pObject;
 			delete pNode->pObject;
 			pNode->pObject = nullptr;
 		}
