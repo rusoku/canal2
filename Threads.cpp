@@ -53,7 +53,7 @@ void workThreadTransmit(void *pObject)
 
 	timeout = 500;
 	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x01, PIPE_TRANSFER_TIMEOUT, sizeof(ULONG), &timeout);
-	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x01, RAW_IO, 0, 0);
+	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x01, RAW_IO, 0, nullptr);
 
 	while (pobj->m_bRunTxTask)
 	{
@@ -164,7 +164,7 @@ void workThreadReceive(void *pObject)
 
 	timeout = 500;
 	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x81, PIPE_TRANSFER_TIMEOUT, sizeof(ULONG), &timeout);
-	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x81, RAW_IO, 0, 0);
+	WinUsb_SetPipePolicy(pobj->deviceData.WinusbHandle, 0x81, RAW_IO, 0, nullptr);
 
 	while (pobj->m_bRunRxTask)
 	{
