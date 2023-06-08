@@ -593,9 +593,7 @@ bool   CTouCANObj::TouCAN_get_serial_number(UINT32 *ver)
 //
 bool   CTouCANObj::TouCAN_get_vid_pid(UINT32 *ver)
 {
-	//UINT8	LastErrorCode;
 	UINT8	res;
-//	canalStatus  StatusTmp;
 	UINT8	buf[4];
 	ULONG	Transfered;
 	WINUSB_SETUP_PACKET	SetupPacket;
@@ -635,9 +633,7 @@ bool   CTouCANObj::TouCAN_get_vid_pid(UINT32 *ver)
 //
 bool   CTouCANObj::TouCAN_get_device_id(UINT32 *ver)
 {
-	//UINT8	LastErrorCode;
 	UINT8	res;
-//	canalStatus  StatusTmp;
 	UINT8	buf[4];
 	ULONG	Transfered;
 	WINUSB_SETUP_PACKET	SetupPacket;
@@ -842,7 +838,6 @@ bool CTouCANObj::TouCAN_set_filter_ext_list_mask(Filter_Type_TypeDef type, UINT3
 {
 	UINT8	res;
 	WINUSB_SETUP_PACKET	SetupPacket;
-//	UINT32  temp;
 	UINT8	buf[8];
 	ULONG	Transfered;
 

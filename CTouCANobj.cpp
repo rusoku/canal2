@@ -643,8 +643,6 @@ int CTouCANObj::ReadMsg(canalMsg *pMsg)
 
 	ResetEvent(m_receiveDataEvent);
 
-	//wprintf(L"Counter=%d\n", ++counter);
-
 	return CANAL_ERROR_SUCCESS;
 }
 
@@ -774,8 +772,6 @@ int CTouCANObj::WriteMsgBlocking(canalMsg *pMsg, ULONG Timeout)
 	cnt = m_transmitList.nCount;
 	UNLOCK_MUTEX(m_transmitListMutex);
 
-	//wprintf(L"FIFO CNT=%d\n", cnt);
-
 	if(cnt >= TouCAN_MAX_FIFO)
 	{
 		ResetEvent(m_transmitDataPutEvent);
@@ -818,8 +814,6 @@ int CTouCANObj::WriteMsgBlocking(canalMsg *pMsg, ULONG Timeout)
 	LOCK_MUTEX(m_transmitListMutex);
 	res = pDllList->AddNode(&m_transmitList, pNode);
 	UNLOCK_MUTEX(m_transmitListMutex);
-
-	//wprintf(L"ADDED TO LIST\n");
 
 	if (res != TRUE)
 	{

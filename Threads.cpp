@@ -120,7 +120,6 @@ void workThreadTransmit(void *pObject)
 		do {
 			if (WinUsb_WritePipe(pobj->deviceData.WinusbHandle, 0x01, &TxDataBuf[0], index, &Transfered, nullptr) == TRUE)
 			{
-				//DebugPrintf("TxThread WinUsb_WritePipe: \n");
 				break;
 			}
 			else
@@ -135,10 +134,6 @@ void workThreadTransmit(void *pObject)
 						//pobj->m_bOpen = FALSE;
 						pobj->m_bRun = FALSE;
 					}
-				}
-				if (dw == ERROR_SEM_TIMEOUT)
-			 	{
-					//wprintf(L"TIMEOUT\n");
 				}
 			}
 		} while (pobj->m_bRunTxTask);		

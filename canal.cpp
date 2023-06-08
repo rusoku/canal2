@@ -45,19 +45,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         case DLL_PROCESS_ATTACH: {
             theApp = new CDllDrvObj();
             theApp->InitInstance();
-            //DebugPrintf("TouCAN DLL Process Attach\n");
-
-            /*
-            CAN_interface_list(&CanDevList);
-
-            DebugPrintf("\nTotal devices found: = %d\n", CanDevList.canDevCount);
-            for(int x = 0; x < CanDevList.canDevCount; x++ ){
-                DebugPrintf("Serial = %s\n", CanDevList.canDevInfo[x].SerialNumber);
-                DebugPrintf("VID = 0x%04X, PID = 0x%04X\n", CanDevList.canDevInfo[x].vid, CanDevList.canDevInfo[x].pid);
-                DebugPrintf("UUID = %s\n", CanDevList.canDevInfo[x].uuid);
-                DebugPrintf("DeviceType = %s\n", CanDevList.canDevInfo[x].DeviceType);
-                DebugPrintf("---\n");
-            }*/
             break;
         }
         case DLL_THREAD_ATTACH: {
@@ -67,7 +54,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             break;
         }
         case DLL_PROCESS_DETACH: {
-            //DebugPrintf("TouCAN DLL Process Detach\n");
             if (lpReserved != nullptr) {
                 break; // do not do cleanup if process termination scenario
             }
