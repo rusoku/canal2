@@ -30,8 +30,14 @@ add_library(canal SHARED
         CTouCANobj.cpp
         CTouCANobjCmdMsg.cpp
         CTouCANobjWinUSB.cpp
-        include/CDllDrvObj.h include/canal.h include/CTouCANobj.h include/CDllList.h
-        canal.cpp include/canal_macro.h utils.c Threads.cpp)
+        canal.cpp
+        utils.c
+        Threads.cpp
+        include/CDllDrvObj.h
+        include/canal.h
+        include/CTouCANobj.h
+        include/CDllList.h
+        include/canal_macro.h)
 
 set_property(TARGET canal PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
