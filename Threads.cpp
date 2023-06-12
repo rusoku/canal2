@@ -29,8 +29,10 @@ SOFTWARE.
 #include "include/CTouCANobj.h"
 #include "include/debug.h"
 
-void workThreadTransmit(void *pObject);
-void workThreadReceive(void *pObject);
+//DllExport int WINAPI
+
+void WINAPI workThreadTransmit(void *pObject);
+void WINAPI workThreadReceive(void *pObject);
 
 ///////////////////////////////////////////////////////////////////////////////
 // workThreadTransmit

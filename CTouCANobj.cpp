@@ -34,8 +34,8 @@ SOFTWARE.
 #include "include/debug.h"
 
 
-void workThreadTransmit(void *pObject);
-void workThreadReceive(void *pObject);
+void WINAPI workThreadTransmit(void *pObject);
+void WINAPI workThreadReceive(void *pObject);
 
 CTouCANObj::CTouCANObj()
 {
@@ -358,12 +358,12 @@ bool CTouCANObj::Open(const char * szFileName, unsigned long flags, bool start) 
 	m_bRunRxTask = TRUE;
 	m_bRunTxTask = TRUE;
 
-	if (nullptr == (m_hTreadReceive = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)workThreadReceive, this, 0, nullptr)))
+	if (nullptr == (m_hTreadReceive = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(workThreadReceive), this, 0, nullptr)))
 	{
 		return FALSE;
 	}
 
-	if (nullptr == (m_hTreadTransmit = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)workThreadTransmit, this, 0, nullptr)))
+	if (nullptr == (m_hTreadTransmit = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(workThreadTransmit), this, 0, nullptr)))
 	{
 		return FALSE;
 	}
