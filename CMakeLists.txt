@@ -13,7 +13,7 @@ set(CMAKE_CXX_COMPILER)
 #add_definitions(-D_UNICODE)
 add_definitions(-D_MBCS)
 add_definitions(-D_WIN32_WINNT_WIN10)
-
+add_definitions(-D_LIBRARY_EXPORTS)
 #add_compile_options(-Wall -Wextra -Wpedantic)
 add_compile_options(-Wno-pragma-once-outside-header)
 add_compile_options(-Wno-unused-parameter)

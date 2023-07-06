@@ -70,7 +70,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 ///////////////////////////////////////////////////////////////////////////////
 //  CanalGetDeviceList
 //
-DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList, int canalDeviceListSize){
+int CanalGetDeviceList(pcanal_dev_list canalDeviceList, int canalDeviceListSize){
     if(canalDeviceList == nullptr)
         return  CANAL_ERROR_MEMORY;
 
@@ -96,7 +96,7 @@ DllExport int WINAPI CanalGetDeviceList(pcanal_dev_list canalDeviceList, int can
 ///////////////////////////////////////////////////////////////////////////////
 //  CanalOpen
 //
-DllExport long WINAPI CanalOpen(const char *pDevice, unsigned long flags)
+long CanalOpen(const char *pDevice, unsigned long flags)
 {
     long h = 0;
     auto pDrvObj = new CTouCANObj();
@@ -117,7 +117,7 @@ DllExport long WINAPI CanalOpen(const char *pDevice, unsigned long flags)
 //  CanalClose
 //
 
-DllExport long WINAPI CanalClose(long handle)
+long CanalClose(long handle)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
 
@@ -134,7 +134,7 @@ DllExport long WINAPI CanalClose(long handle)
 //  CanalGetLevel
 //
 
-DllExport long WINAPI CanalGetLevel(long handle)
+long CanalGetLevel(long handle)
 {
     return CANAL_LEVEL_STANDARD;
 }
@@ -144,7 +144,7 @@ DllExport long WINAPI CanalGetLevel(long handle)
 // CanalSend
 //
 
-DllExport int WINAPI  CanalSend(long handle, PCANALMSG pCanalMsg)
+int CanalSend(long handle, PCANALMSG pCanalMsg)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -156,7 +156,7 @@ DllExport int WINAPI  CanalSend(long handle, PCANALMSG pCanalMsg)
 // CanalSend blocking
 //
 
-DllExport int WINAPI CanalBlockingSend(long handle, PCANALMSG pCanalMsg, unsigned long timeout)
+int CanalBlockingSend(long handle, PCANALMSG pCanalMsg, unsigned long timeout)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -167,7 +167,7 @@ DllExport int WINAPI CanalBlockingSend(long handle, PCANALMSG pCanalMsg, unsigne
 // CanalReceive
 //
 
-DllExport int WINAPI CanalReceive(long handle, PCANALMSG pCanalMsg)
+int CanalReceive(long handle, PCANALMSG pCanalMsg)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -178,7 +178,7 @@ DllExport int WINAPI CanalReceive(long handle, PCANALMSG pCanalMsg)
 // CanalReceive blocking
 //
 
-DllExport int WINAPI CanalBlockingReceive(long handle, PCANALMSG pCanalMsg, unsigned long timeout)
+int CanalBlockingReceive(long handle, PCANALMSG pCanalMsg, unsigned long timeout)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -189,7 +189,7 @@ DllExport int WINAPI CanalBlockingReceive(long handle, PCANALMSG pCanalMsg, unsi
 // CanalDataAvailable
 //
 
-DllExport int WINAPI CanalDataAvailable(long handle)
+int CanalDataAvailable(long handle)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -199,7 +199,7 @@ DllExport int WINAPI CanalDataAvailable(long handle)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalGetStatus
 //
-DllExport int WINAPI CanalGetStatus(long handle, PCANALSTATUS pCanalStatus)
+int CanalGetStatus(long handle, PCANALSTATUS pCanalStatus)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
 
@@ -212,7 +212,7 @@ DllExport int WINAPI CanalGetStatus(long handle, PCANALSTATUS pCanalStatus)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalGetStatistics
 //
-DllExport int WINAPI CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStatistics)
+int CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStatistics)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
 
@@ -225,7 +225,7 @@ DllExport int WINAPI CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStat
 ///////////////////////////////////////////////////////////////////////////////
 // CanalSetFilter
 //
-DllExport int WINAPI CanalSetFilter(long handle, unsigned long filter)
+int CanalSetFilter(long handle, unsigned long filter)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -235,7 +235,7 @@ DllExport int WINAPI CanalSetFilter(long handle, unsigned long filter)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalSetMask
 //
-DllExport int WINAPI CanalSetMask(long handle, unsigned long mask)
+int CanalSetMask(long handle, unsigned long mask)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -245,7 +245,7 @@ DllExport int WINAPI CanalSetMask(long handle, unsigned long mask)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalSetBaudrate
 //
-DllExport int WINAPI CanalSetBaudrate(long handle, unsigned long baudrate)
+int CanalSetBaudrate(long handle, unsigned long baudrate)
 {
     // Not supported in this DLL
     return CANAL_ERROR_NOT_SUPPORTED;
@@ -254,7 +254,7 @@ DllExport int WINAPI CanalSetBaudrate(long handle, unsigned long baudrate)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalGetVersion
 //
-DllExport unsigned long WINAPI CanalGetVersion(void)
+unsigned long CanalGetVersion(void)
 {
     unsigned long version;
     unsigned char* p = (unsigned char *)&version;
@@ -269,9 +269,8 @@ DllExport unsigned long WINAPI CanalGetVersion(void)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalGetDllVersion
 //
-DllExport unsigned long WINAPI CanalGetDllVersion(void)
+unsigned long CanalGetDllVersion(void)
 {
-
     unsigned long version;
     unsigned char *p = (unsigned char *)&version;
 
@@ -285,7 +284,7 @@ DllExport unsigned long WINAPI CanalGetDllVersion(void)
 ///////////////////////////////////////////////////////////////////////////////
 // CanalGetVendorString
 //
-DllExport const char* WINAPI  CanalGetVendorString(void)
+const char* CanalGetVendorString(void)
 {
     static char r_str[256];
 
@@ -302,7 +301,7 @@ DllExport const char* WINAPI  CanalGetVendorString(void)
 ///////////////////////////////////////////////////////////////////////////////
 //Get CANAL driver properties
 //
-DllExport const char* WINAPI CanalGetDriverInfo(void)
+const char* CanalGetDriverInfo(void)
 {
     return "\n";
 }
@@ -315,7 +314,7 @@ DllExport const char* WINAPI CanalGetDriverInfo(void)
 	@param handle Handle to open physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
-DllExport int WINAPI CanalSetFilter11bit(long handle, Filter_Type_TypeDef type, unsigned long list, unsigned long mask)
+int CanalSetFilter11bit(long handle, Filter_Type_TypeDef type, unsigned long list, unsigned long mask)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -328,7 +327,7 @@ DllExport int WINAPI CanalSetFilter11bit(long handle, Filter_Type_TypeDef type, 
 	@param handle Handle to open physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
-DllExport int WINAPI CanalSetFilter29bit(long handle, Filter_Type_TypeDef type, unsigned long list, unsigned long mask)
+int CanalSetFilter29bit(long handle, Filter_Type_TypeDef type, unsigned long list, unsigned long mask)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
@@ -341,67 +340,63 @@ DllExport int WINAPI CanalSetFilter29bit(long handle, Filter_Type_TypeDef type, 
 	@param handle Handle to open physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
-DllExport int WINAPI CanalGetBootloaderVersion(long handle, unsigned long *bootloader_version)
+int CanalGetBootloaderVersion(long handle, unsigned long *bootloader_version)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->GetBootloaderVersion(bootloader_version));
 }
 
-
-DllExport int WINAPI CanalGetHardwareVersion(long handle, unsigned long *hardware_version)
+int CanalGetHardwareVersion(long handle, unsigned long *hardware_version)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->GetHardwareVersion(hardware_version));
 }
 
-
-DllExport int WINAPI CanalGetFirmwareVersion(long handle, unsigned long *firmware_version)
+int CanalGetFirmwareVersion(long handle, unsigned long *firmware_version)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->GetFirmwareVersion(firmware_version));
 }
 
-
-DllExport int WINAPI CanalGetSerialNumber(long handle, unsigned long *serial)
+int CanalGetSerialNumber(long handle, unsigned long *serial)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->GetSerialNumber(serial));
 }
 
-
-DllExport int WINAPI CanalGetVidPid(long handle, unsigned long *vidpid)
+int CanalGetVidPid(long handle, unsigned long *vidpid)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->GetVidPid(vidpid));
 }
 
-DllExport int WINAPI CanalGetDeviceId(long handle, unsigned long *deviceid)
+int CanalGetDeviceId(long handle, unsigned long *deviceid)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return 0;
     return (pDrvObj->GetDeviceId(deviceid));
 }
 
-DllExport int WINAPI CanalGetVendor(long handle, unsigned int size, char *vendor)
+int CanalGetVendor(long handle, unsigned int size, char *vendor)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->GetVendor(size, vendor));
 }
 
-DllExport int WINAPI CanalInterfaceStart(long handle)
+int CanalInterfaceStart(long handle)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
     return (pDrvObj->InterfaceStart());
 }
 
-DllExport int WINAPI CanalInterfaceStop(long handle)
+int CanalInterfaceStop(long handle)
 {
     CTouCANObj *pDrvObj = theApp->GetDriverObject(handle);
     if (nullptr == pDrvObj) return CANAL_ERROR_MEMORY;
