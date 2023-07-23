@@ -27,8 +27,10 @@ SOFTWARE.
 
 #ifdef _LIBRARY_EXPORTS
 #define LIBRARY_API __declspec(dllexport)
+#define WIN_API
 #else
 #define LIBRARY_API __declspec(dllimport)
+#define WIN_API WINAPI
 #endif
 
 // Canal Levels
@@ -276,21 +278,21 @@ extern "C" {
    	@param  flags   Give extra info to the CANAL i/F.
 	@return Handle of device or -1 if error.
 */
-LIBRARY_API  long CanalOpen(const char *pDevice, unsigned long flags);
+LIBRARY_API long WIN_API CanalOpen(const char *pDevice, unsigned long flags);
 
 /** @name   CanalClose
     @brief  Close a CANAL chanel.
    	@param  handle Handle to close physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API   long CanalClose(long handle);
+LIBRARY_API long WIN_API CanalClose(long handle);
 
 /** @name   CanalGetLevel
     @brief
    	@param  handle Handle to close physical CANAL channel.
 	@return
 */
-LIBRARY_API  long CanalGetLevel(long handle);
+LIBRARY_API long WIN_API CanalGetLevel(long handle);
 
 /**
     @name   CanalSend
@@ -299,7 +301,7 @@ LIBRARY_API  long CanalGetLevel(long handle);
 	@param  pCanMsg - Message to send.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API   int CanalSend(long handle, PCANALMSG pCanalMsg);
+LIBRARY_API int WIN_API CanalSend(long handle, PCANALMSG pCanalMsg);
 
 /**
     @name   CanalBlockingSend
@@ -309,7 +311,7 @@ LIBRARY_API   int CanalSend(long handle, PCANALMSG pCanalMsg);
     @param  @param timeout - Timeout in ms. 0 is forever.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API int CanalBlockingSend(long handle, PCANALMSG pCanalMsg, unsigned long timeout);
+LIBRARY_API int WIN_API CanalBlockingSend(long handle, PCANALMSG pCanalMsg, unsigned long timeout);
 
 /**
     @name   CanalSend
@@ -318,7 +320,7 @@ LIBRARY_API int CanalBlockingSend(long handle, PCANALMSG pCanalMsg, unsigned lon
 	@param  pCanMsg - Message to receive.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API int CanalReceive(long handle, PCANALMSG pCanalMsg);
+LIBRARY_API int WIN_API CanalReceive(long handle, PCANALMSG pCanalMsg);
 
 /**
     @name   CanalBlockingSend
@@ -328,7 +330,7 @@ LIBRARY_API int CanalReceive(long handle, PCANALMSG pCanalMsg);
     @param  @param timeout - Timeout in ms. 0 is forever.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API int CanalBlockingReceive(long handle, PCANALMSG pCanalMsg, unsigned long timeout);
+LIBRARY_API int WIN_API CanalBlockingReceive(long handle, PCANALMSG pCanalMsg, unsigned long timeout);
 
 /**
     @name   CanalDataAvailable
@@ -337,7 +339,7 @@ LIBRARY_API int CanalBlockingReceive(long handle, PCANALMSG pCanalMsg, unsigned 
 	@return Zero if no message is available or the number of messages is
 	        there are messages waiting to be received.
 */
-LIBRARY_API int CanalDataAvailable(long handle);
+LIBRARY_API int WIN_API CanalDataAvailable(long handle);
 
 /**
     @name   CanalGetStatus
@@ -346,7 +348,7 @@ LIBRARY_API int CanalDataAvailable(long handle);
     @param  pCanStatus Pointer to a CANAL status structure.
     @param  zero on success or error-code on failure.
 */
-LIBRARY_API int CanalGetStatus(long handle, PCANALSTATUS pCanalStatus);
+LIBRARY_API int WIN_API CanalGetStatus(long handle, PCANALSTATUS pCanalStatus);
 
 /**
     @name   CanalGetStatistics
@@ -355,7 +357,7 @@ LIBRARY_API int CanalGetStatus(long handle, PCANALSTATUS pCanalStatus);
     @param  pCanStatus Pointer to a CANAL status structure.
     @param  zero on success or error-code on failure.
 */
-LIBRARY_API int CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStatistics);
+LIBRARY_API int WIN_API CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStatistics);
 
 /**
     @name   CanalSetFilter
@@ -364,7 +366,7 @@ LIBRARY_API int CanalGetStatistics(long handle, PCANALSTATISTICS pCanalStatistic
     @param  filter
     @param  zero on success or error-code on failure.
 */
-LIBRARY_API int CanalSetFilter(long handle, unsigned long filter);
+LIBRARY_API int WIN_API CanalSetFilter(long handle, unsigned long filter);
 
 /**
     @name   CanalSetMask
@@ -373,7 +375,7 @@ LIBRARY_API int CanalSetFilter(long handle, unsigned long filter);
     @param  filter
     @param  zero on success or error-code on failure.
 */
-LIBRARY_API int CanalSetMask(long handle, unsigned long mask);
+LIBRARY_API int WIN_API CanalSetMask(long handle, unsigned long mask);
 
 /**
     @name   CanalSetBaudrate
@@ -382,35 +384,35 @@ LIBRARY_API int CanalSetMask(long handle, unsigned long mask);
     @param  baudrate Baudrate for the channel
     @param  zero on success or error-code on failure.
 */
-LIBRARY_API int CanalSetBaudrate(long handle, unsigned long baudrate);
+LIBRARY_API int WIN_API CanalSetBaudrate(long handle, unsigned long baudrate);
 
 /**
     @name   CanalGetVersion
     @brief  Get CANAL version.
     @return version for CANAL i/f.
 */
-LIBRARY_API unsigned long CanalGetVersion(void);
+LIBRARY_API unsigned long WIN_API CanalGetVersion(void);
 
 /**
     @name   CanalGetDllVersion
     @brief  Get CANAL DLL version.
     @return version for CANAL dll implemention.
 */
-LIBRARY_API unsigned long CanalGetDllVersion(void);
+LIBRARY_API unsigned long WIN_API CanalGetDllVersion(void);
 
 /**
     @name   CanalGetDriverInfo
     @brief  Get CANAL driver properties.
     @return driver info string.
 */
-LIBRARY_API  const char* CanalGetVendorString(void);
+LIBRARY_API  const char* WIN_API CanalGetVendorString(void);
 
 /**
     @name   CanalGetDriverInfo
     @brief  Get CANAL vendor string.
     @return vendor string.
 */
-LIBRARY_API const char* CanalGetDriverInfo(void);
+LIBRARY_API const char* WIN_API CanalGetDriverInfo(void);
 
 /*************************************************************
  *  EXTENDED NON STANDARD API LIST
@@ -430,7 +432,7 @@ typedef enum {
 	@return zero on success or error-code on failure.
 */
 
-LIBRARY_API int CanalSetFilter11bit( long handle, Filter_Type_TypeDef type,  unsigned long list, unsigned long mask );
+LIBRARY_API int WIN_API CanalSetFilter11bit( long handle, Filter_Type_TypeDef type,  unsigned long list, unsigned long mask );
 
 /*!
 	Set the 29bit filter  ID, Mask for a CANAL channel
@@ -438,7 +440,7 @@ LIBRARY_API int CanalSetFilter11bit( long handle, Filter_Type_TypeDef type,  uns
 	@param handle Handle to open physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API int CanalSetFilter29bit( long handle, Filter_Type_TypeDef type,  unsigned long list, unsigned long mask );
+LIBRARY_API int WIN_API CanalSetFilter29bit( long handle, Filter_Type_TypeDef type,  unsigned long list, unsigned long mask );
 
 /*!
 	Get bootloader ver
@@ -446,16 +448,16 @@ LIBRARY_API int CanalSetFilter29bit( long handle, Filter_Type_TypeDef type,  uns
 	@param handle Handle to open physical CANAL channel.
 	@return zero on success or error-code on failure.
 */
-LIBRARY_API int CanalGetBootloaderVersion(long handle, unsigned long* bootloader_version);
-LIBRARY_API int CanalGetHardwareVersion(long handle, unsigned long* hardware_version);
-LIBRARY_API int CanalGetFirmwareVersion(long handle, unsigned long* firmware_version);
-LIBRARY_API int CanalGetSerialNumber(long handle, unsigned long* serial);
-LIBRARY_API int CanalGetVidPid(long handle, unsigned long* vidpid);
-LIBRARY_API int CanalGetDeviceId(long handle, unsigned long* deviceid);
-LIBRARY_API int CanalGetVendor(long handle, unsigned int size, char* vendor);
-LIBRARY_API int CanalInterfaceStart(long handle);
-LIBRARY_API int CanalInterfaceStop(long handle);
-LIBRARY_API int CanalGetDeviceList(pcanal_dev_list canalDeviceList, int canalDeviceListSize);
+LIBRARY_API int WIN_API CanalGetBootloaderVersion(long handle, unsigned long* bootloader_version);
+LIBRARY_API int WIN_API CanalGetHardwareVersion(long handle, unsigned long* hardware_version);
+LIBRARY_API int WIN_API CanalGetFirmwareVersion(long handle, unsigned long* firmware_version);
+LIBRARY_API int WIN_API CanalGetSerialNumber(long handle, unsigned long* serial);
+LIBRARY_API int WIN_API CanalGetVidPid(long handle, unsigned long* vidpid);
+LIBRARY_API int WIN_API CanalGetDeviceId(long handle, unsigned long* deviceid);
+LIBRARY_API int WIN_API CanalGetVendor(long handle, unsigned int size, char* vendor);
+LIBRARY_API int WIN_API CanalInterfaceStart(long handle);
+LIBRARY_API int WIN_API CanalInterfaceStop(long handle);
+LIBRARY_API int WIN_API CanalGetDeviceList(pcanal_dev_list canalDeviceList, int canalDeviceListSize);
 
 #ifdef __cplusplus
 }
