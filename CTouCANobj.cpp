@@ -75,9 +75,9 @@ CTouCANObj::CTouCANObj()
 	m_transmitListMutex = CreateMutex(nullptr, FALSE, nullptr);
 
 	// Events
-	m_receiveDataEvent =     CreateEvent(nullptr, TRUE, FALSE, nullptr);
-	m_transmitDataPutEvent = CreateEvent(nullptr, TRUE, TRUE, nullptr);   // default: signaled
-	m_transmitDataGetEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);  // default: not signaled
+	m_receiveDataEvent =     CreateEvent(nullptr, TRUE, FALSE, nullptr);    // default: not signaled
+	m_transmitDataPutEvent = CreateEvent(nullptr, TRUE, TRUE, nullptr);     // default: signaled
+	m_transmitDataGetEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);    // default: not signaled
 
 #ifdef DEBUG_CANAL
 	if (!AllocConsole())
@@ -425,7 +425,7 @@ bool CTouCANObj::Close(){
 	//  TouCAN initialisation
 	TouCAN_deinit();
 	
-	Sleep(100);
+	Sleep(50);
 
 	// Terminate Rx Thread
 	m_bRunRxTask = FALSE;
@@ -434,6 +434,13 @@ bool CTouCANObj::Close(){
 	
 	m_bOpen = FALSE;
 	m_bRun = FALSE;
+
+    // signal blocking reception event
+    //if (m_receiveDataEvent != nullptr) {
+    //    (void) SetEvent(m_receiveDataEvent);
+    //}
+
+    Sleep(50);
 
 	while (true)
 	{
@@ -641,7 +648,7 @@ int CTouCANObj::ReadMsg(canalMsg *pMsg)
 	pDllList->RemoveNode(&m_receiveList, m_receiveList.pHead);
 	UNLOCK_MUTEX(m_receiveListMutex);
 
-	ResetEvent(m_receiveDataEvent);
+	//ResetEvent(m_receiveDataEvent);
 
 	return CANAL_ERROR_SUCCESS;
 }
@@ -652,51 +659,118 @@ int CTouCANObj::ReadMsg(canalMsg *pMsg)
 // readMsg
 // Blocking
 
-int CTouCANObj::ReadMsgBlocking(canalMsg *pMsg, ULONG	 Timeout)
+int CTouCANObj::ReadMsgBlocking(canalMsg *pMsg, ULONG   Timeout)
 {
-	//int rv = CANAL_ERROR_SUCCESS;
-	//DWORD res;
+if(1){
 
-	// Must be a message pointer
-	if (nullptr == pMsg)
-		return CANAL_ERROR_PARAMETER;
+    //int rv = CANAL_ERROR_SUCCESS;
+    //DWORD res;
 
-	// Must be open
-	if (!m_bOpen)
-		return CANAL_ERROR_NOT_OPEN;
+    // Must be a message pointer
+    if (nullptr == pMsg)
+        return CANAL_ERROR_PARAMETER;
 
-	if (!m_bRun)
-		return CANAL_ERROR_HARDWARE;
+    // Must be open
+    if (!m_bOpen)
+        return CANAL_ERROR_NOT_OPEN;
 
-	// Must be open
-	if (!m_bOpen)
-		return CANAL_ERROR_NOT_OPEN;
+    if (!m_bRun)
+        return CANAL_ERROR_HARDWARE;
 
-	if (m_bRunRxTask != TRUE)
-		return	CANAL_ERROR_HARDWARE;
+    // Must be open
+    if (!m_bOpen)
+        return CANAL_ERROR_NOT_OPEN;
 
-	// Yes we block if inqueue is empty
-	if (m_receiveList.nCount == 0)
-	{
-		if (WaitForSingleObject(m_receiveDataEvent, Timeout) != WAIT_OBJECT_0)
-			return  CANAL_ERROR_TIMEOUT;
-	}
+    if (m_bRunRxTask != TRUE)
+        return	CANAL_ERROR_HARDWARE;
 
-	if (m_receiveList.nCount > 0)
-	{
-		LOCK_MUTEX(m_receiveListMutex);		
-		memcpy_s(pMsg, sizeof(canalMsg), m_receiveList.pHead->pObject, sizeof(canalMsg));
-		pDllList->RemoveNode(&m_receiveList, m_receiveList.pHead);
+    // Yes we block if inqueue is empty
+    if (m_receiveList.nCount == 0)
+    {
+        if (WaitForSingleObject(m_receiveDataEvent, Timeout) != WAIT_OBJECT_0)
+            return  CANAL_ERROR_TIMEOUT;
+    }
+
+    if (m_receiveList.nCount > 0)
+    {
+        LOCK_MUTEX(m_receiveListMutex);
+        memcpy_s(pMsg, sizeof(canalMsg), m_receiveList.pHead->pObject, sizeof(canalMsg));
+        pDllList->RemoveNode(&m_receiveList, m_receiveList.pHead);
         UNLOCK_MUTEX(m_receiveListMutex);
 
-		ResetEvent(m_receiveDataEvent);
-	}
-	else
-		return  CANAL_ERROR_FIFO_EMPTY;
+        ResetEvent(m_receiveDataEvent);
+    }
+    else
+        return  CANAL_ERROR_FIFO_EMPTY;
 
-	return CANAL_ERROR_SUCCESS;
+    return CANAL_ERROR_SUCCESS;
+
 }
 
+else {
+    //https://learn.microsoft.com/en-us/windows/win32/sync/using-waitable-timer-objects
+    //https://stackoverflow.com/questions/16830227/how-do-i-use-waitformultipleobjects-to-balance-competing-work
+
+    HANDLE handles[2];
+    HANDLE hTimer;
+    LARGE_INTEGER liDueTime;
+    //liDueTime.QuadPart = -100000000LL;
+
+    //The period of the timer, in milliseconds.
+    liDueTime.QuadPart = 1000;
+
+    // Must be a message pointer
+    if (nullptr == pMsg)
+        return CANAL_ERROR_PARAMETER;
+
+    // Must be open
+    if (!m_bOpen)
+        return CANAL_ERROR_NOT_OPEN;
+
+    if (!m_bRun)
+        return CANAL_ERROR_HARDWARE;
+
+    // Must be open
+    if (!m_bOpen)
+        return CANAL_ERROR_NOT_OPEN;
+
+    if (m_bRunRxTask != TRUE)
+        return CANAL_ERROR_HARDWARE;
+
+    if (Timeout == 0)
+        Timeout = INFINITE;
+
+    // Create an unnamed waitable timer.
+    hTimer = CreateWaitableTimer(nullptr, TRUE, nullptr);
+    if (nullptr == hTimer) {
+        return CANAL_ERROR_GENERIC;
+    }
+
+    handles[0] = m_receiveDataEvent;
+    handles[1] = hTimer;
+
+    // Set a timer to wait for 10 seconds.
+    if (!SetWaitableTimer(hTimer, &liDueTime, 0, nullptr, nullptr, 0)) {
+        CloseHandle(hTimer);
+        return CANAL_ERROR_GENERIC;
+    }
+
+    while (WaitForMultipleObjects(1, handles, false, Timeout) != WAIT_OBJECT_0) {
+        if (m_receiveList.nCount > 0) {
+            LOCK_MUTEX(m_receiveListMutex);
+            memcpy_s(pMsg, sizeof(canalMsg), m_receiveList.pHead->pObject, sizeof(canalMsg));
+            pDllList->RemoveNode(&m_receiveList, m_receiveList.pHead);
+            UNLOCK_MUTEX(m_receiveListMutex);
+
+            ResetEvent(m_receiveDataEvent);
+            ResetEvent(hTimer);
+        }
+    }
+
+    CloseHandle(hTimer);
+    return CANAL_ERROR_SUCCESS;
+}
+}
 
 //////////////////////////////////////////////////////////////////////
 // writeMsg

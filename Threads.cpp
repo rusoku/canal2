@@ -120,27 +120,26 @@ void workThreadTransmit(void *pObject)
 		}
 
 		do {
+
 			if (WinUsb_WritePipe(pobj->deviceData.WinusbHandle, 0x01, &TxDataBuf[0], index, &Transfered, nullptr) == TRUE)
 			{
-				break;
+			    break;
 			}
-			else
-			{
-				dw = GetLastError();
-				if (dw == ERROR_BAD_COMMAND)
-				{
-					ErrorCounter++;
-					if (ErrorCounter == 100)
-					{
-						pobj->m_bRunTxTask = FALSE;
-						//pobj->m_bOpen = FALSE;
-						pobj->m_bRun = FALSE;
-					}
-				}
-			}
-		} while (pobj->m_bRunTxTask);		
+			//else
+			//{
+			//	dw = GetLastError();
+			//	if (dw == ERROR_BAD_COMMAND)
+			//	{
+			//		ErrorCounter++;
+			//		if (ErrorCounter == 100)
+			//		{
+						//pobj->m_bRunTxTask = FALSE;
+						//pobj->m_bRun = FALSE;
+			//		}
+			//	}
+			//}
+		} while (pobj->m_bRunTxTask);
 	}
-
 	ExitThread(errorCode);
 }
 
@@ -172,17 +171,17 @@ void workThreadReceive(void *pObject)
 	{
 		if (WinUsb_ReadPipe(pobj->deviceData.WinusbHandle, 0x81, &RxDataBuf[0], 64, &Transfered, nullptr) != TRUE)
 		{
-			dw = GetLastError();
+			//dw = GetLastError();
 
-			if (dw == ERROR_BAD_COMMAND)
-			{
-				ErrorCounter++;
-				if (ErrorCounter == 100)
-				{
-				 pobj->m_bRunRxTask = FALSE;
-				 pobj->m_bRun = FALSE;
-				}
-			}
+			//if (dw == ERROR_BAD_COMMAND)
+			//{
+			//	ErrorCounter++;
+			//	if (ErrorCounter == 100)
+			//	{
+				 //pobj->m_bRunRxTask = FALSE;
+				 //pobj->m_bRun = FALSE;
+			//	}
+			//}
 			continue;
 		}
 

@@ -30,14 +30,14 @@ SOFTWARE.
 
 #define DLL_MAIN_VERSION					1
 #define DLL_MINOR_VERSION					0
-#define DLL_SUB_VERSION				        5
+#define DLL_SUB_VERSION				        6
 
 // This is the vendor string - Change to your own value
 #define CANAL_DLL_VENDOR "Rusoku Technologijos UAB, Lithuania, http://www.rusoku.com"
 
 
 // Max number of open connections
-#define CANAL_TouCAN_DRIVER_MAX_OPEN	8
+#define CANAL_TouCAN_DRIVER_MAX_OPEN	64
 
 /////////////////////////////////////////////////////////////////////////////
 // CDllDrvObj

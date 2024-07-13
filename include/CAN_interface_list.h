@@ -27,7 +27,7 @@ SOFTWARE.
 
 #include <windows.h>
 
-#define TOTAL_DEVICES_AVAILABLE 8
+#define TOTAL_DEVICES_AVAILABLE 64
 
 struct CAN_DEV_INFO{
     TCHAR   DeviceType[64];

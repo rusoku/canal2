@@ -18,9 +18,9 @@ add_definitions(-D_LIBRARY_EXPORTS)
 add_compile_options(-Wno-pragma-once-outside-header)
 add_compile_options(-Wno-unused-parameter)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+#if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     #add_compile_definitions(canal DEBUG_CANAL)
-endif()
+#endif()
 
 add_library(canal SHARED
         CAN_interface_list.c
