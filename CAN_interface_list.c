@@ -31,6 +31,8 @@ SOFTWARE.
 #include "include/CAN_interface_list.h"
 #include "include/canal.h"
 #include "include/guid.h"
+#include "include/debug.h"
+
 
 CONFIGRET   cr = CR_SUCCESS;
 ULONG   device_interface_list_length = 0;
@@ -52,6 +54,8 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
     TCHAR   *token2 = NULL;
     TCHAR   *next_token2 = NULL;
     TCHAR   tmp_string[64];
+
+    //DebugPrintf("*** D E B U G ***\n");
 
     if (canDeviceList == NULL)
         return  CR_INVALID_POINTER;
@@ -94,10 +98,10 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
 
     for (UINT16 x = 0; x < TOTAL_DEVICES_AVAILABLE; x++)
     {
-        hr = StringCchLengthA(pCurrentIterfaceList, STRSAFE_MAX_LENGTH, &DeviceStrLen);
+        hr = StringCchLengthA(pCurrentIterfaceList, STRSAFE_MAX_CCH, &DeviceStrLen);
         if (FAILED(hr) || DeviceStrLen == 0)
             break;
-
+/*
         file_hd = CreateFile(pCurrentIterfaceList,
                              GENERIC_WRITE | GENERIC_READ,
                              FILE_SHARE_WRITE | FILE_SHARE_READ,
@@ -105,8 +109,8 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
                              OPEN_EXISTING,
                              FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
                              NULL);
-
-        if (file_hd != INVALID_HANDLE_VALUE)
+*/
+//        if (file_hd != INVALID_HANDLE_VALUE)
         {
             /* Device ID */
             token1 = strtok_s(pCurrentIterfaceList,"#", &next_token1);
@@ -159,6 +163,7 @@ DWORD CAN_interface_list(struct CAN_DEV_LIST* canDeviceList) {
     }
 
     clean0:
+    //DebugPrintf("CurrentDeviceIndex=%d\n", CurrentDeviceIndex);
     canDeviceList->canDevCount = CurrentDeviceIndex;
     HeapFree(GetProcessHeap(), 0, device_interface_list);
 

@@ -33,7 +33,6 @@ SOFTWARE.
 #include <strsafe.h>
 #include "include/debug.h"
 
-
 void WINAPI workThreadTransmit(void *pObject);
 void WINAPI workThreadReceive(void *pObject);
 
