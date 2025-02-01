@@ -28,6 +28,7 @@ SOFTWARE.
 #include <windows.h>
 
 #define TOTAL_DEVICES_AVAILABLE 64
+#define STRSAFE_MAX_LENGTH 256
 
 struct CAN_DEV_INFO{
     TCHAR   DeviceType[64];
