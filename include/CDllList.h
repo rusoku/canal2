@@ -2,7 +2,7 @@
 MIT License
 
 Copyright (c) 2000-2023 Åke Hedman, Grodans Paradis AB
-Copyright (c) 2005-2023 Gediminas Simanskis, Rusoku technologijos UAB (gediminas@rusoku.com)
+Copyright (c) 2005-2025 Gediminas Simanskis, Rusoku technologijos UAB (gediminas@rusoku.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
